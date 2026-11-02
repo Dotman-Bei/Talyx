@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verify Talyx</title>
+  <meta name="description" content="Every number Talyx shows can be rebuilt from public RPCs: the addresses, BEEFY keys, encodings and commands to do it.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><!-- hashes, addresses and code only. taste-skill-ignore -->
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <a class="wordmark" href="/" aria-label="Talyx home">
+      <svg class="wordmark__mark" viewBox="0 0 28 20" aria-hidden="true"><path d="M0 0h28v9H18l-3-3-3 3H0z" fill="var(--mint)"/><path d="M0 11h12l3 3 3-3h10v9H0z" fill="var(--pink)"/></svg>
+      Talyx
+    </a>
+    <nav class="nav__links" aria-label="Sections">
+      <a class="link" href="#claim">The claim</a>
+      <a class="link" href="#contracts">Contracts</a>
+      <a class="link" href="#keys">Keys</a>
+      <a class="link" href="#cli">CLI</a>
+      <a class="link" href="#tests">Tests</a>
+    </nav>
+    <a class="button button--small" href="/app/">Open the demo</a>
+    <details class="nav__menu">
+      <summary>Menu</summary>
+      <nav class="nav__sheet" aria-label="Sections">
+        <a href="#claim">The claim</a><a href="#contracts">Contracts</a><a href="#keys">Keys</a><a href="#cli">CLI</a><a href="#tests">Tests</a>
+      </nav>
+    </details>
+  </header>
+
+  <main id="main">
+    <section class="vhero" aria-labelledby="v-title">
+      <div class="vhero__text">
+        <h1 class="display" id="v-title" data-rise>Check every claim yourself</h1>
+        <p class="lead" data-rise style="--i:1">Every number Talyx shows can be rebuilt from public RPCs. These are the addresses, keys, encodings and commands to do it.</p>
+        <p class="vhero__note small" data-rise style="--i:2">Testnet only and unaudited. Talyx trusts V3’s two BEEFY keys, which are probably development keys, and V3’s sudo key. It trusts no relayer and no committee.</p>
+      </div>
+      <div class="vstage">
+        <div class="checks" data-ui data-checks>
+          <div class="checks__head">
+            <p class="checks__title">Three checks on real V3 data</p>
+            <button class="checks__run" type="button" data-run>Run the check</button>
+          </div>
+          <ol class="checks__list">
+            <li data-check="keys">
+              <span class="checks__mark" aria-hidden="true"></span>
+              <div><b>The BEEFY keyset</b><p><code>keccak256(keccak256(key 1) ++ keccak256(key 2))</code> equals <code>MmrLeaf.BeefyAuthorities</code>, <code>0xc745…a7d5</code>.</p><p class="checks__out" data-out></p></div>
+            </li>
+            <li data-check="sigs">
+              <span class="checks__mark" aria-hidden="true"></span>
+              <div><b>Both signatures on block 279,494</b><p>Recovering the two signatures over <code>keccak256(commitment)</code> gives the two BEEFY keys, in order.</p><p class="checks__out" data-out></p></div>
+            </li>
+            <li data-check="mmr">
+              <span class="checks__mark" aria-hidden="true"></span>
+              <div><b>The MMR root at block 279,493</b><p>Bagging the 8 on-chain peaks right to left reproduces <code>mmr_root</code>, <code>0x073b…93a1</code>.</p><p class="checks__out" data-out></p></div>
+            </li>
+          </ol>
+          <p class="checks__foot" data-summary aria-live="polite">Runs in this browser with viem. Nothing is sent anywhere.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="doc wrap">
+      <aside class="doc__toc" aria-label="On this page">
+        <a href="#claim">The claim</a>
+        <a href="#trust">Proven or trusted</a>
+        <a href="#contracts">Contracts</a>
+        <a href="#network">Network</a>
+        <a href="#keys">BEEFY keys</a>
+        <a href="#justification">A real justification</a>
+        <a href="#peaks">MMR peaks</a>
+        <a href="#encoding">Encoding</a>
+        <a href="#cli">Prover CLI</a>
+        <a href="#tests">Forged-proof tests</a>
+        <a href="#notice">Third-party code</a>
+      </aside>
+
+      <div class="doc__body">
+        <section class="dsec" id="claim" aria-labelledby="claim-title">
+          <h2 class="head" id="claim-title">The claim</h2>
+          <div class="claim">
+          <div class="claim__text">
+          <p class="statement">A filler cannot be paid unless V3’s BEEFY keys signed a block in which the order’s recipient received the order’s amount.</p>
+          <ol class="howto">
+            <li><b>Open the claim transaction on Sepolia.</b> Read the imported block number and hash from its <code>Imported</code> event.</li>
+            <li><b>Fetch that block’s <code>BEEF</code> justification from V3</b> with <code>chain_getBlock</code>, recompute <code>keccak256(SCALE(commitment))</code> and recover both signers. Compare them with the keys below.</li>
+            <li><b>Resend the same claim with one recipient byte changed.</b> It reverts with <code>SlotMismatch</code>.</li>
+          </ol>
+          </div>
+          <figure class="claim__figure" data-reveal>
+            <img src="/assets/tally-halves.jpg" width="1000" height="557" alt="The two halves of a medieval tally stick, notched along one edge and inscribed in ink" loading="lazy" decoding="async">
+            <figcaption class="small">Two halves of a medieval tally. Either party could check one against the other. Winchester City Council Museums.</figcaption>
+          </figure>
+          </div>
+        </section>
+
+        <section class="dsec" id="trust" aria-labelledby="trust-title">
+          <h2 class="head" id="trust-title">Proven or trusted</h2>
+          <div class="tablewrap">
+            <table class="dtable">
+              <thead><tr><th>Item</th><th>Status</th><th>How</th></tr></thead>
+              <tbody>
+                <tr><td>The fill record exists in FillBook storage at a finalized V3 block</td><td><span class="pill pill--ok">Proven</span></td><td>BEEFY signatures, MMR root, header, state root, child trie</td></tr>
+                <tr><td>The filler sent the value to the recipient</td><td><span class="pill pill--ok">Proven by code</span></td><td>FillBook writes the record and sends the value in one call; a failed send reverts both</td></tr>
+                <tr><td>V3’s two BEEFY keys are honest</td><td><span class="pill pill--wait">Trusted</span></td><td>Two validators, probably development keys</td></tr>
+                <tr><td>V3’s sudo key</td><td><span class="pill pill--wait">Trusted</span></td><td>Sudo is present: <code>5Ca3hX34…1Xc5J</code></td></tr>
+                <tr><td>BeefyStateRoots authority addresses</td><td><span class="pill pill--plain">Checkable</span></td><td>Set from <code>Beefy.Authorities</code>; the owner can update them, with an event</td></tr>
+                <tr><td>The escrow’s FillBook trie id</td><td><span class="pill pill--plain">Checkable</span></td><td>Fixed at deployment; readable from <code>Revive.AccountInfoOf</code></td></tr>
+                <tr><td>Relayer or prover</td><td><span class="pill pill--ok">Not trusted</span></td><td>Can delay a claim, cannot forge one</td></tr>
+                <tr><td>Committee</td><td><span class="pill pill--ok">None</span></td><td>No one holds funds or signs releases</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dsec" id="contracts" aria-labelledby="contracts-title">
+          <h2 class="head" id="contracts-title">Contracts</h2>
+          <p>Addresses and deployment transactions appear here as each contract goes live. Until then the demo runs in preview.</p>
+          <div class="tablewrap">
+            <table class="dtable">
+              <thead><tr><th>Contract</th><th>Chain</th><th>Address</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td><b>FillBook</b></td><td>Portaldot V3 (Revive, 420420777)</td><td><span class="pill pill--plain">Not deployed yet</span></td><td>Records each fill and pays the recipient in one call</td></tr>
+                <tr><td><b>BeefyStateRoots</b></td><td>Sepolia (11155111)</td><td><span class="pill pill--plain">Not deployed yet</span></td><td>Verifies BEEFY, MMR and header; stores V3 state roots. <code>stateRootOf(bytes32)</code> returns <code>(stateRoot, number)</code></td></tr>
+                <tr><td><b>TalyxEscrow</b></td><td>Sepolia (11155111)</td><td><span class="pill pill--plain">Not deployed yet</span></td><td>Orders, claims with storage proofs, refunds after the deadline plus 30 minutes</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dsec" id="network" aria-labelledby="network-title">
+          <h2 class="head" id="network-title">Network</h2>
+          <div class="tablewrap">
+            <table class="dtable dtable--kv">
+              <tbody>
+                <tr><th scope="row">V3 Substrate RPC</th><td><code>wss://test-node-v3.portaldot.dev</code></td></tr>
+                <tr><th scope="row">V3 EVM RPC</th><td><code>https://test-evm-rpc-v3.portaldot.dev</code>, chain id 420420777 (<code>0x190f1ca9</code>)</td></tr>
+                <tr><th scope="row">Runtime</th><td><code>portaldot-v3</code> spec 3002, state version 1, 6-second blocks, 2 validators</td></tr>
+                <tr><th scope="row">Token</th><td>tPOT, 14 decimals, SS58 prefix 42. Revive counts in 18 decimals: <code>NativeToEthRatio</code> is 10,000</td></tr>
+                <tr><th scope="row">Sepolia</th><td>Chain id 11155111, with the EIP-152 BLAKE2 precompile</td></tr>
+                <tr><th scope="row">V3 explorer</th><td><code>https://node-console.portaldot.dev</code> (look up by block)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dsec" id="keys" aria-labelledby="keys-title">
+          <h2 class="head" id="keys-title">BEEFY keys</h2>
+          <p>From <code>beefy.authorities</code> on V3, unchanged from 1 to 2 November 2026. Both signatures are required: more than two thirds of two is two.</p>
+          <div class="tablewrap">
+            <table class="dtable">
+              <thead><tr><th>Key</th><th>Compressed secp256k1 key</th><th>Ethereum address</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td><code class="hex">0x028f12cacb8859c1cd56bec31499dd6251b50ac6dd297a8e6a1974f9affe5e42f5</code></td><td><code>0x4d13b6aea6cd423cc48d7159ac10b26927c2b421</code></td></tr>
+                <tr><td>2</td><td><code class="hex">0x037c2fb56876492e164c268c9f6ef0fba6ef436c9f02bbd754fff372acd62d10f0</code></td><td><code>0x4a69b8f722a9b486f9db0d243c908170012d7413</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Keyset commitment, equal to <code>MmrLeaf.BeefyAuthorities</code> and <code>MmrLeaf.BeefyNextAuthorities</code>: <code class="hex">0xc745b6c2eca708396dde733c7b93f344da8eee0eb435e68fac6a77bce9c1a7d5</code></p>
+        </section>
+
+        <section class="dsec" id="justification" aria-labelledby="just-title">
+          <h2 class="head" id="just-title">A real justification</h2>
+          <p>Block 279,494, read from <code>chain_getBlock(…).justifications</code> under engine id <code>BEEF</code>, without its SCALE length prefix, field by field:</p>
+          <div class="tablewrap">
+            <table class="dtable">
+              <thead><tr><th>Bytes</th><th>Field</th><th>Value</th></tr></thead>
+              <tbody>
+                <tr><td><code>01</code></td><td>Version</td><td>1</td></tr><!-- a real byte, taste-skill-ignore -->
+                <tr><td><code>04 6d68 80</code></td><td>Payload: one item, id “mh”, 32 bytes</td><td>Merkle Mountain Range root follows</td></tr>
+                <tr><td><code class="hex">8dca1dc9…57829d</code></td><td>MMR root</td><td>Equals <code>mmr_root</code> at 279,494</td></tr>
+                <tr><td><code>c6430400</code></td><td>Block number, u32 little-endian</td><td>279,494</td></tr>
+                <tr><td><code>d701000000000000</code></td><td>Validator set id, u64 little-endian</td><td>471</td></tr>
+                <tr><td><code>04 c0</code></td><td>Signature bitfield</td><td>Both validators signed</td></tr>
+                <tr><td><code>02000000</code></td><td>Validator set length</td><td>2</td></tr>
+                <tr><td><code>08</code> + 2 × 65 bytes</td><!-- a real byte, taste-skill-ignore --><td>Signatures in bitfield order</td><td>Recovery id 1 each; add 27 for Solidity <code>ecrecover</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <figure class="jfigure" data-reveal>
+            <img src="/assets/tally-split.jpg" width="1400" height="855" alt="A wooden tally stick dated 1843, its split line and groups of notches visible" loading="lazy" decoding="async">
+            <figcaption class="small">Like the notches on this tally, every byte has a fixed place and a fixed meaning.</figcaption>
+          </figure>
+          <p>The message both keys sign is <code>keccak256</code> of the 48 commitment bytes: <code class="hex">0x046d68808dca1dc9b511f35a70fa4dda937a4773b3c37f5329ae7908ec0ab8ce8157829dc6430400d701000000000000</code></p>
+        </section>
+
+        <section class="dsec" id="peaks" aria-labelledby="peaks-title">
+          <h2 class="head" id="peaks-title">MMR peaks</h2>
+          <p>The public node returns <code>LeafNotFound</code> for <code>mmr_generateProof</code>, so Talyx proves the newest leaf instead. <code>Mmr.Nodes</code> holds only the peaks and can be read at any past block. These 8, at block 279,493, bag to <code>0x073b27ff…2393a1</code>.</p>
+          <div class="tablewrap">
+            <table class="dtable">
+              <thead><tr><th class="num">Position</th><th>Hash</th></tr></thead>
+              <tbody>
+                <tr><td class="num">524,286</td><td><code class="hex">0xa65329486f3dfa39457a540a3127d56c2df5abca963db3abdb342b05e069cb72</code></td></tr>
+                <tr><td class="num">557,053</td><td><code class="hex">0x442b41167037ec0ae39e00e97d1230bb97d583d8f2c43403677e042963e48321</code></td></tr>
+                <tr><td class="num">558,076</td><td><code class="hex">0xd5e18dbd3338de4092f941e75e82c163e4b1c5baf0da127159b79b27350022c0</code></td></tr>
+                <tr><td class="num">558,587</td><td><code class="hex">0xc1656d9c5c5424a34bbd954e2df38b68bde3bdd7cf140c6470b156998193ff1d</code></td></tr>
+                <tr><td class="num">558,842</td><td><code class="hex">0x6b2fec68e210367dd0dde5d2d55fb6803e3cff9242fb943e83a401e76938b835</code></td></tr>
+                <tr><td class="num">558,969</td><td><code class="hex">0xb41b2c90d985278910a8a698348a88913d8e7bf11320974c972728ebe69ea0b2</code></td></tr>
+                <tr><td class="num">558,976</td><td><code class="hex">0x908c80bc691bf631d1c31a1cb13bc787f1065e4475a8db67afa6f221f3ef605d</code></td></tr>
+                <tr><td class="num">558,977</td><td><code class="hex">0x58d1405a87b99546836d0c38ae6b8b79ea938aae5c544813009fa7e9d4a21922</code> (the leaf of block 279,493)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dsec" id="encoding" aria-labelledby="enc-title">
+          <h2 class="head" id="enc-title">Encoding</h2>
+          <p>Official docs still describe V1, so here is what V3 does, each line checked against live data.</p>
+          <dl class="enc">
+            <div><dt>MMR leaf</dt><dd><code>keccak256(u32le(parent_number) ++ parent_hash)</code>. The leaf added in block B commits to block B−1, and the leaf count at block n is n.</dd></div>
+            <div><dt>MMR append and bag</dt><dd>A node is <code>keccak256(left ++ right)</code>, merging while the last peak’s height equals the current height. Bag from the rightmost peak: <code>acc = keccak256(acc ++ peak)</code>.</dd></div>
+            <div><dt>Header</dt><dd><code>blake2b-256(SCALE(header))</code> is the block hash. Layout: <code>parent_hash[32] ++ compact(number) ++ state_root[32] ++ extrinsics_root[32] ++ digest</code>.</dd></div>
+            <div><dt>Revive storage</dt><dd><code>Revive.AccountInfoOf(address)</code> holds the trie id. The child root sits under <code>":child_storage:default:" ++ trie_id</code>; a 32-byte slot sits under <code>blake2_256(slot)</code>, stored as <code>0x80 ++ word</code>.</dd></div>
+            <div><dt>FillBook slot</dt><dd><code>fillKey = keccak256(abi.encode(orderKey, recipient, amount))</code>; the slot is <code>keccak256(abi.encode(fillKey, 0))</code>; the word is <code>payee | timestamp &lt;&lt; 160</code>.</dd></div>
+            <div><dt>Order key</dt><dd><code>keccak256(abi.encode(11155111, escrow, orderId))</code>, so another chain or another escrow produces another key.</dd></div>
+          </dl>
+        </section>
+
+        <section class="dsec" id="cli" aria-labelledby="cli-title">
+          <h2 class="head" id="cli-title">Prover CLI</h2>
+          <p>Anyone can run these against public RPCs. A relayer can delay a claim with them; it cannot forge one.</p>
+          <div class="codeblock">
+            <button class="codeblock__copy" type="button" data-copy="cli-code">Copy</button>
+<pre id="cli-code"><code>talyx find-justified --after &lt;block&gt;     # next block with a stored BEEF justification
+talyx build-import &lt;B&gt;                    # justification, peaks at B-1, SCALE header B-1
+talyx build-claim &lt;orderId&gt; --at &lt;B-1&gt;   # main-trie and child-trie proofs of the fill
+talyx verify &lt;orderId&gt;                    # every on-chain check, off-chain first
+talyx import &lt;B&gt;                          # BeefyStateRoots.importBlock on Sepolia
+talyx claim &lt;orderId&gt;                     # TalyxEscrow.claim, pays the recorded payee
+talyx refund &lt;orderId&gt;                    # after the deadline plus 30 minutes
+talyx fill                                # watch OrderCreated and fill on V3</code></pre>
+          </div>
+          <p class="small muted">The fill block must be at most B−1. The CLI scans for justifications rather than assuming their cadence, which shifts over time.</p>
+        </section>
+
+        <section class="dsec" id="tests" aria-labelledby="tests-title">
+          <h2 class="head" id="tests-title">Forged-proof tests</h2>
+          <p>Each case must revert with the named error. The first two are shown live in the demo.</p>
+          <div class="tablewrap">
+            <table class="dtable">
+              <thead><tr><th>Case</th><th>Tamper</th><th>Reverts with</th></tr></thead>
+              <tbody>
+                <tr><td>T-1</td><td>Recipient byte changed in the claim</td><td><code>SlotMismatch</code></td></tr>
+                <tr><td>T-2</td><td>Amount changed</td><td><code>SlotMismatch</code></td></tr>
+                <tr><td>T-3</td><td>Payee changed</td><td><code>WordMismatch</code></td></tr>
+                <tr><td>T-4</td><td>Fill timestamp changed</td><td><code>WordMismatch</code></td></tr>
+                <tr><td>T-5</td><td>Real fill recorded after the deadline</td><td><code>FillTooLate</code></td></tr>
+                <tr><td>T-6</td><td>One signature only, or a bitfield with one bit</td><td><code>NotEnoughSignatures</code></td></tr>
+                <tr><td>T-7</td><td>Signature from a key that is not an authority</td><td><code>BadSigner</code></td></tr>
+                <tr><td>T-8</td><td>The same signature twice</td><td><code>BadSigner</code></td></tr>
+                <tr><td>T-9</td><td>A byte of the signed root flipped</td><td><code>BadSigner</code></td></tr>
+                <tr><td>T-10</td><td>Peaks altered, missing or extra</td><td><code>MmrRootMismatch</code>, <code>BadPeakCount</code></td></tr>
+                <tr><td>T-11</td><td>Header from another block</td><td><code>HeaderMismatch</code></td></tr>
+                <tr><td>T-12</td><td>Validator set id lower than the last one seen</td><td><code>StaleSetId</code></td></tr>
+                <tr><td>T-13</td><td>Payload id not “mh”, or an extra item</td><td><code>BadPayload</code></td></tr>
+                <tr><td>T-14</td><td>Main-trie proof for another trie id</td><td><code>ChildRootMismatch</code></td></tr>
+                <tr><td>T-15</td><td>Claim against a block hash never imported</td><td><code>UnknownBlock</code></td></tr>
+                <tr><td>T-16</td><td>A second claim</td><td><code>NotOpen</code></td></tr>
+                <tr><td>T-17</td><td>Refund before the window closes</td><td><code>TooEarly</code></td></tr>
+                <tr><td>T-18</td><td>Claim after a refund</td><td><code>NotOpen</code></td></tr>
+                <tr><td>T-19</td><td>Order key from another escrow or chain</td><td><code>SlotMismatch</code></td></tr>
+                <tr><td>T-20</td><td>Amount not divisible by 10⁴ at createOrder</td><td><code>BadAmount</code></td></tr>
+                <tr><td>T-21</td><td>A second correct fill on V3</td><td><code>FILLED</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dsec" id="notice" aria-labelledby="notice-title">
+          <h2 class="head" id="notice-title">Third-party code</h2>
+          <div class="tablewrap">
+            <table class="dtable">
+              <thead><tr><th>Dependency</th><th>Licence</th><th>Use</th></tr></thead>
+              <tbody>
+                <tr><td>blake2b-solidity</td><td>MIT</td><td>BLAKE2b over the EIP-152 precompile</td></tr>
+                <tr><td>solidity-merkle-trees, <code>PolkadotTrie</code></td><td>Apache-2.0</td><td>Substrate trie proof walk; node hash changed from keccak256 to blake2b-256</td></tr>
+                <tr><td>@polkadot/api, @polkadot/util-crypto</td><td>Apache-2.0</td><td>The prover</td></tr>
+                <tr><td>viem</td><td>MIT</td><td>Sepolia client, and the checks on this page</td></tr>
+                <tr><td>forge-std</td><td>MIT / Apache-2.0</td><td>Tests</td></tr>
+                <tr><td>BridgeZero</td><td>Apache-2.0</td><td>Reference only for the Revive slot read; no code copied</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <figure class="band vband" aria-labelledby="vband-caption">
+      <img src="/assets/exchequer-tally-diagram.jpg" width="1427" height="208" alt="Drawing of an English Exchequer tally with notches of different widths along its lower edge" loading="lazy" decoding="async">
+      <figcaption class="band__caption small" id="vband-caption">An Exchequer tally from the 1911 Encyclopaedia Britannica. Anyone holding the other half could check it against this one.</figcaption>
+    </figure>
+  </main>
+
+  <footer class="foot foot--short">
+    <div class="foot__cols">
+      <nav aria-label="Product"><h2>Product</h2><a class="link" href="/">About Talyx</a><a class="link" href="/app/">Demo</a></nav>
+      <nav aria-label="On this page"><h2>Reference</h2><a class="link" href="#encoding">Encoding</a><a class="link" href="#cli">Prover CLI</a></nav>
+      <div><h2>Event</h2><p>Portaldot Hacker House 2026</p><p>Multi-Chain &amp; Cross-Chain Infra</p></div>
+      <div class="foot__trust"><h2>Trust</h2><p>Testnet only. Unaudited.</p><p>Trusts V3’s 2 BEEFY keys (probably development keys) and V3 sudo.</p></div>
+    </div>
+    <p class="foot__credits small">Pictures: “Medieval tally sticks” by Winchester City Council Museums, <a href="https://commons.wikimedia.org/wiki/File:Medieval_tally_sticks.jpg">CC BY-SA 2.0</a>. “SAM PC 1 – Tally sticks 1 – Item 06”, <a href="https://commons.wikimedia.org/w/index.php?curid=8726827">CC BY 3.0</a>. Exchequer tally from the Encyclopaedia Britannica (1911), <a href="https://commons.wikimedia.org/wiki/File:EB1911_Tally_-_tally_stick_(diagram).jpg">public domain</a>. All via Wikimedia Commons.</p>
+    <div class="foot__last">
+      <p class="small">© 2026 Talyx</p>
+      <a class="button button--small button--light" href="/app/">Open the demo</a>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/site/verify.ts"></script>
+</body>
+</html>
