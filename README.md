@@ -81,6 +81,8 @@ Forged claims sent as `eth_call` to the deployed escrow, each the real proof wit
 | the proof used for another order (another recipient and amount) | `SlotMismatch` |
 | a block hash Sepolia never imported | `UnknownBlock` |
 
+A fill from a second, unrelated wallet (order 5), claimed by the deployer and paid to that wallet:
+[`0xd0ecba07…498406`](https://sepolia.etherscan.io/tx/0xd0ecba07e4d782ec279f275530fafb67392adfdcaee52db6e8159cff9f498406).
 A refund after the deadline plus the 30-minute claim window:
 [`0xaeaeb111…1022ae`](https://sepolia.etherscan.io/tx/0xaeaeb111dff311ee524061eb09ea5c82c5791834eb0aeb34f0986b687e1022ae).
 Every order, fill, import and claim so far: [docs/EVIDENCE.md](docs/EVIDENCE.md).
@@ -90,7 +92,7 @@ Every order, fill, import and claim so far: [docs/EVIDENCE.md](docs/EVIDENCE.md)
 | Call | Gas | Source |
 | --- | --- | --- |
 | `importBlock` (2 signatures, 10 peaks, 230-byte header) | 292,436 to 406,522 | import transactions above and in docs/EVIDENCE.md |
-| `claim` (main-trie and child-trie proofs) | 488,319 and 489,845 | claim transactions of orders 1 and 3 |
+| `claim` (main-trie and child-trie proofs) | 488,319 to 680,194 | orders 1, 3 and 5; it grows with the records in FillBook's storage |
 | `refund` | 45,091 | refund of order 2 |
 
 For comparison, BridgeZero reports about 1.87M gas per GRANDPA header import on Sepolia (its README).
