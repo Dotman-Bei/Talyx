@@ -122,14 +122,14 @@
 
         <section class="dsec" id="contracts" aria-labelledby="contracts-title">
           <h2 class="head" id="contracts-title">Contracts</h2>
-          <p>Addresses and deployment transactions appear here as each contract goes live. Until then the demo runs in preview.</p>
+          <p>Deployed on 2 November 2026. FillBook and BeefyStateRoots share an address because each was the deployer’s first contract on its chain. The first full order was filled on V3 in block 293,346, imported in <a href="https://sepolia.etherscan.io/tx/0x0ebcdc9f1e94f44ae444b41d609f5e11d3c6785ed01a5342af14829fbfed1bcb">0x0ebcdc9f…2bcb</a> and claimed in <a href="https://sepolia.etherscan.io/tx/0x9f93af028ed8e6ac8d87861816cabc7a83173c61f709266ee5adfbf172755e0c">0x9f93af02…5e0c</a>.</p>
           <div class="tablewrap">
             <table class="dtable">
-              <thead><tr><th>Contract</th><th>Chain</th><th>Address</th><th>Purpose</th></tr></thead>
+              <thead><tr><th>Contract</th><th>Chain</th><th>Address and deploy transaction</th><th>Purpose</th></tr></thead>
               <tbody>
-                <tr><td><b>FillBook</b></td><td>Portaldot V3 (Revive, 420420777)</td><td><span class="pill pill--plain">Not deployed yet</span></td><td>Records each fill and pays the recipient in one call</td></tr>
-                <tr><td><b>BeefyStateRoots</b></td><td>Sepolia (11155111)</td><td><span class="pill pill--plain">Not deployed yet</span></td><td>Verifies BEEFY, MMR and header; stores V3 state roots. <code>stateRootOf(bytes32)</code> returns <code>(stateRoot, number)</code></td></tr>
-                <tr><td><b>TalyxEscrow</b></td><td>Sepolia (11155111)</td><td><span class="pill pill--plain">Not deployed yet</span></td><td>Orders, claims with storage proofs, refunds after the deadline plus 30 minutes</td></tr>
+                <tr><td><b>FillBook</b></td><td>Portaldot V3 (Revive, 420420777), block 293,226</td><td><code class="hex">0xbe86343e5c69f305b61680e142ada94fb4394068</code><br><span class="small muted">tx <code class="hex">0x53edee4d2fe159213a209ff55bb5b673030a2b3a33bee877effcff9f194a6c6e</code></span></td><td>Records each fill and pays the recipient in one call. Trie id <code class="hex">0x13cd5a49…4d30</code></td></tr>
+                <tr><td><b>BeefyStateRoots</b></td><td>Sepolia (11155111)</td><td><a href="https://sepolia.etherscan.io/address/0xbe86343e5c69f305b61680e142ada94fb4394068"><code class="hex">0xbe86343e5c69f305b61680e142ada94fb4394068</code></a><br><span class="small muted">tx <a href="https://sepolia.etherscan.io/tx/0x976c648477d7b26152efd8d4096348dd4bf981194193d9be8ea4d37c50e05fe3"><code>0x976c6484…5fe3</code></a></span></td><td>Verifies BEEFY, MMR and header; stores V3 state roots. <code>stateRootOf(bytes32)</code> returns <code>(stateRoot, number)</code></td></tr>
+                <tr><td><b>TalyxEscrow</b></td><td>Sepolia (11155111)</td><td><a href="https://sepolia.etherscan.io/address/0x908d8899795072985e35cb86da3aff88ce4e72e9"><code class="hex">0x908d8899795072985e35cb86da3aff88ce4e72e9</code></a><br><span class="small muted">tx <a href="https://sepolia.etherscan.io/tx/0x1727711b5dee27740e95c7337b7e8f1ce350de800d7ff03db9aea88ed67a6283"><code>0x1727711b…6283</code></a></span></td><td>Orders, claims with storage proofs, refunds after the deadline plus 30 minutes</td></tr>
               </tbody>
             </table>
           </div>
