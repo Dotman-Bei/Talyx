@@ -1,0 +1,52 @@
+[
+ {
+  "file": "assets/tally-halves.jpg",
+  "title": "Medieval tally sticks",
+  "creator": "Winchester City Council Museums",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Medieval_tally_sticks.jpg",
+  "credit": "\"Medieval tally sticks\" by Winchester City Council Museums, CC BY-SA 2.0, via Wikimedia Commons",
+  "changes": "none"
+ },
+ {
+  "file": "assets/tally-split.jpg",
+  "title": "SAM PC 1 - Tally sticks 1 - Item 06",
+  "creator": null,
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "page": "https://commons.wikimedia.org/w/index.php?curid=8726827",
+  "credit": "\"SAM PC 1 - Tally sticks 1 - Item 06\", CC BY 3.0, via Wikimedia Commons",
+  "changes": "resized to 1400px"
+ },
+ {
+  "file": "assets/tallies-museum-case.jpg",
+  "title": "SAM PC 1 - Tally sticks 1 - Overview",
+  "creator": null,
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+  "page": "https://commons.wikimedia.org/w/index.php?curid=8725556",
+  "credit": "\"SAM PC 1 - Tally sticks 1 - Overview\", CC BY 3.0, via Wikimedia Commons",
+  "changes": "resized to 1600px"
+ },
+ {
+  "file": "assets/portrait-tally.jpg",
+  "title": "Portrait of an Elderly Man Holding a Tally Stick (DO 4170)",
+  "creator": "Master of the Legend of the Magdalen",
+  "license": "public domain",
+  "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+  "page": "https://commons.wikimedia.org/wiki/File:Master_of_the_Legend_of_Magdalen_-_Portrait_of_an_Elderly_Man_Holding_a_Tally_Stick,_DO_4170.png",
+  "credit": "\"Portrait of an Elderly Man Holding a Tally Stick\" by the Master of the Legend of the Magdalen, public domain, via Wikimedia Commons",
+  "changes": "resized to 1200px, saved as JPEG"
+ },
+ {
+  "file": "assets/exchequer-tally-diagram.jpg",
+  "title": "EB1911 Tally - tally stick (diagram)",
+  "creator": "Encyclopaedia Britannica, 11th edition (1911)",
+  "license": "public domain",
+  "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+  "page": "https://commons.wikimedia.org/wiki/File:EB1911_Tally_-_tally_stick_(diagram).jpg",
+  "credit": "\"EB1911 Tally - tally stick (diagram)\", public domain, via Wikimedia Commons",
+  "changes": "none"
+ }
+]
