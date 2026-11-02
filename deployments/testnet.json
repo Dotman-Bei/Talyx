@@ -6,5 +6,24 @@
     "trieId": "0x13cd5a49017997a0635348586915f609bb5a5e0b85acae8583dcc1ac4fe24d30",
     "codeHash": "0x23b57059841d103537ac04e8e3a22f077596e0d51aed3f75925b5744cca05086",
     "deployer": "0x5e3cC65cA2f1a6AC3Bf75f7110E50d296F127fe6"
+  },
+  "beefyStateRoots": {
+    "address": "0xbe86343e5c69f305b61680e142ada94fb4394068",
+    "tx": "0x976c648477d7b26152efd8d4096348dd4bf981194193d9be8ea4d37c50e05fe3",
+    "block": 12048946,
+    "genesis": "0xd4f9acbcf7f52388d8b095abe3c198d19fc510e0343e643e87cfbccb155283bd",
+    "authorities": [
+      "0x4d13b6aea6cd423cc48d7159ac10b26927c2b421",
+      "0x4a69b8f722a9b486f9db0d243c908170012d7413"
+    ],
+    "keysetCommitment": "0xc745b6c2eca708396dde733c7b93f344da8eee0eb435e68fac6a77bce9c1a7d5"
+  },
+  "talyxEscrow": {
+    "address": "0x908d8899795072985e35cb86da3aff88ce4e72e9",
+    "tx": "0x1727711b5dee27740e95c7337b7e8f1ce350de800d7ff03db9aea88ed67a6283",
+    "block": 12048947,
+    "fillBook": "0xbe86343e5c69f305b61680e142ada94fb4394068",
+    "trieId": "0x13cd5a49017997a0635348586915f609bb5a5e0b85acae8583dcc1ac4fe24d30",
+    "claimWindow": 1800
   }
 }
