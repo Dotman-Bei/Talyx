@@ -1,7 +1,10 @@
 import { useSyncExternalStore } from 'react';
+import { formatEther, formatUnits } from 'viem';
+import type { ChainOrder } from './chain';
 
-// Orders as the demo shows them. Until the contracts are deployed (VITE_ESCROW_ADDRESS and friends), the app runs
-// in preview: sample orders below, and transactions are simulated in the browser. V3 block data stays live.
+// Orders as the demo shows them. With the contract addresses set (VITE_ESCROW_ADDRESS and friends) they are read from
+// Sepolia and V3 and every action is a MetaMask transaction (chain.ts). Without them the app runs in preview: sample
+// orders below, simulated actions. V3 block data is live either way.
 
 export const CONTRACTS = {
   escrow: import.meta.env.VITE_ESCROW_ADDRESS as string | undefined,
@@ -13,7 +16,7 @@ export const PREVIEW = !CONTRACTS.escrow || !CONTRACTS.stateRoots || !CONTRACTS.
 export const CLAIM_WINDOW_MS = 30 * 60 * 1000;
 export const ETH_PER_TPOT = 0.0002;
 
-export interface Fill { filler: string; payee: string; block: number; at: number }
+export interface Fill { filler: string; payee: string; block: number; at: number; tx?: string }
 export interface Signed { block: number; setId: number }
 export interface Order {
   id: number;
@@ -28,6 +31,7 @@ export interface Order {
   claimedAt?: number;
   refundedAt?: number;
   simulated: boolean;
+  chain?: ChainOrder; // the on-chain record, in live mode
 }
 
 export type Stage = 'open' | 'filled' | 'signed' | 'claimed' | 'refundable' | 'refunded' | 'expired';
@@ -126,7 +130,7 @@ function samples(now: number): Order[] {
 }
 
 /* ---------- the store ---------- */
-let orders: Order[] = samples(Date.now());
+let orders: Order[] = PREVIEW ? samples(Date.now()) : [];
 const listeners = new Set<() => void>();
 const emit = () => { orders = [...orders]; listeners.forEach((l) => l()); };
 
@@ -134,6 +138,7 @@ export function useOrders(): Order[] {
   return useSyncExternalStore((l) => { listeners.add(l); return () => listeners.delete(l); }, () => orders);
 }
 export const getOrder = (id: number) => orders.find((o) => o.id === id);
+export const getOrders = () => orders;
 
 export function createOrder(input: { requester: string; recipient: string; amount: string; price: string; minutes: number }): Order {
   const now = Date.now();
@@ -162,7 +167,9 @@ export const refundOrder = (id: number) => update(id, { refundedAt: Date.now() }
  * Tie preview fills to the live chain: a fill with no block takes the current V3 head, and a filled order becomes
  * "signed" once a stored BEEFY justification for a later block has been seen (the proof reads the state root of B-1).
  */
+let lastV3: { best?: number; justified: { number: number; setId: number }[] } = { justified: [] };
 export function syncWithV3(best: number | undefined, justified: { number: number; setId: number }[]) {
+  lastV3 = { best, justified };
   let changed = false;
   orders = orders.map((o) => {
     if (!o.fill || o.signed || o.claimedAt) return o;
@@ -173,4 +180,51 @@ export function syncWithV3(best: number | undefined, justified: { number: number
     return next;
   });
   if (changed) emit();
+}
+
+/* ---------- live mode: orders read from the chains ---------- */
+
+export interface LiveStatus { loading: boolean; error?: string; updatedAt?: number }
+let live: LiveStatus = { loading: !PREVIEW };
+const liveListeners = new Set<() => void>();
+const setLive = (p: Partial<LiveStatus>) => { live = { ...live, ...p }; liveListeners.forEach((l) => l()); };
+export const useLiveStatus = () => useSyncExternalStore((l) => { liveListeners.add(l); return () => liveListeners.delete(l); }, () => live);
+
+const trim = (s: string) => (s.includes('.') ? s.replace(/0+$/, '').replace(/\.$/, '') : s);
+
+function fromChain(c: ChainOrder, prev?: Order): Order {
+  return {
+    id: c.id, requester: c.requester, recipient: c.recipient,
+    amount: trim(formatUnits(c.amountWei, 18)), price: trim(formatEther(c.priceWei)),
+    createdAt: c.createdAt, deadline: c.deadline,
+    fill: c.fill ? { filler: c.fill.filler, payee: c.fill.payee, block: c.fill.block, at: c.fill.at, tx: c.fill.tx } : undefined,
+    signed: c.fill && prev?.fill?.block === c.fill.block ? prev.signed : undefined,
+    claimedAt: c.claimedAt, refundedAt: c.refundedAt, simulated: false, chain: c,
+  };
+}
+
+let loadingNow: Promise<void> | null = null;
+/** Reload every order from the chains; called on a timer and after each transaction. */
+export function refreshOrders(): Promise<void> {
+  if (PREVIEW) return Promise.resolve();
+  loadingNow ??= (async () => {
+    try {
+      const { loadOrders } = await import('./chain');
+      const chainOrders = await loadOrders();
+      const prev = new Map(orders.map((o) => [o.id, o]));
+      orders = chainOrders.map((c) => fromChain(c, prev.get(c.id))).sort((a, b) => b.id - a.id);
+      emit();
+      syncWithV3(lastV3.best, lastV3.justified);
+      setLive({ loading: false, error: undefined, updatedAt: Date.now() });
+    } catch (e) {
+      setLive({ loading: false, error: (e as Error).message.split('\n')[0] });
+    } finally {
+      loadingNow = null;
+    }
+  })();
+  return loadingNow;
+}
+if (!PREVIEW) {
+  refreshOrders();
+  setInterval(refreshOrders, 15_000);
 }

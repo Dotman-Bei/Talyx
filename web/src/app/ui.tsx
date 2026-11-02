@@ -1,5 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { STAGE_LABEL, type Stage } from './orders';
+import type { ActionState } from './useAction';
 
 export const shortAddr = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
@@ -60,4 +61,21 @@ export function Mark() {
       <path d="M0 11h12l3 3 3-3h10v9H0z" fill="var(--pink)" />
     </svg>
   );
+}
+
+/* ---------- transactions ---------- */
+
+export function TxLink({ hash, chain }: { hash?: string; chain?: 'sepolia' | 'v3' }) {
+  if (!hash) return <span className="dash">–</span>;
+  const label = `${hash.slice(0, 10)}…${hash.slice(-4)}`;
+  if (chain === 'sepolia') return <a className="txlink" href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noreferrer"><code>{label}</code></a>;
+  return <code title={`${hash} (Portaldot V3: look the block up on node-console.portaldot.dev)`}>{label}</code>;
+}
+
+/** What a transaction is doing, how it ended, and its hash. */
+export function TxStatus({ state }: { state: ActionState }) {
+  if (state.busy) return <p className="txs" role="status"><i className="spinner" aria-hidden="true" />{state.busy}</p>;
+  if (state.error) return <p className="txs txs--bad" role="alert">{state.error}</p>;
+  if (state.done) return <p className="txs txs--ok" role="status">{state.done.text}{state.done.tx && <> <TxLink hash={state.done.tx} chain={state.done.chain} /></>}</p>;
+  return null;
 }

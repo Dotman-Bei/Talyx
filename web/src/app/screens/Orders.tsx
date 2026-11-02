@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { PREVIEW, ago, amountError, clock, createOrder, isAddress, nextStep, priceFor, stageOf, useOrders, type Order, type Stage } from '../orders';
+import { parseEther, parseUnits, type Address } from 'viem';
+import { PREVIEW, ago, amountError, clock, createOrder, getOrders, isAddress, nextStep, priceFor, refreshOrders, stageOf, useLiveStatus, useOrders, type Order, type Stage } from '../orders';
 import { nextJustified, useV3, type V3State } from '../v3';
 import { useWallet } from '../wallet';
-import { Addr, StagePill, go, shortAddr, useNow } from '../ui';
+import { Addr, StagePill, TxStatus, go, shortAddr, useNow } from '../ui';
+import { useAction } from '../useAction';
 
 const TABS: { id: string; label: string; stages: Stage[] | null }[] = [
   { id: 'all', label: 'All', stages: null },
@@ -34,6 +36,7 @@ export function Orders({ creating }: { creating: boolean }) {
   const v3 = useV3();
   const now = useNow();
   const [tab, setTab] = useState('all');
+  const live = useLiveStatus();
 
   const counts = Object.fromEntries(TABS.map((t) => [t.id, t.stages ? orders.filter((o) => t.stages!.includes(stageOf(o, now))).length : orders.length]));
   const current = TABS.find((t) => t.id === tab)!;
@@ -64,8 +67,9 @@ export function Orders({ creating }: { creating: boolean }) {
         ))}
       </div>
 
+      {!PREVIEW && live.error && <p className="notice" role="alert">Couldn’t read orders from the chains: {live.error} <button className="link-btn" onClick={() => refreshOrders()}>Retry</button></p>}
       {rows.length === 0 ? (
-        <p className="empty" style={{ marginTop: 16 }}>No {current.label.toLowerCase()} orders right now.</p>
+        <p className="empty" style={{ marginTop: 16 }}>{live.loading ? 'Reading orders from Sepolia and V3…' : orders.length === 0 ? 'No orders yet. Post the first one.' : `No ${current.label.toLowerCase()} orders right now.`}</p>
       ) : (
         <>
           <table className="table wide-only">
@@ -114,6 +118,7 @@ function NewOrder() {
   const [minutes, setMinutes] = useState(60);
   const [touched, setTouched] = useState(false);
   const first = useRef<HTMLInputElement>(null);
+  const tx = useAction();
 
   useEffect(() => {
     first.current?.focus();
@@ -127,13 +132,24 @@ function NewOrder() {
   const priceError = touched && !(Number(price) > 0) ? 'Enter the ETH you will escrow' : null;
 
   function close() { history.replaceState(null, '', location.pathname + '#/orders'); dispatchEvent(new HashChangeEvent('hashchange')); }
+  function open(id: number) { history.replaceState(null, '', location.pathname + `#/orders/${id}`); dispatchEvent(new HashChangeEvent('hashchange')); }
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setTouched(true);
     if (!isAddress(to) || amountError(amount) || !(Number(price) > 0)) return;
-    const o = createOrder({ requester: wallet.address ?? to, recipient: to.trim(), amount: amount.trim(), price, minutes });
-    history.replaceState(null, '', location.pathname + `#/orders/${o.id}`);
-    dispatchEvent(new HashChangeEvent('hashchange'));
+    if (PREVIEW) {
+      open(createOrder({ requester: wallet.address ?? to, recipient: to.trim(), amount: amount.trim(), price, minutes }).id);
+      return;
+    }
+    tx.run('Confirm createOrder in MetaMask, on Sepolia', async (step) => {
+      const { createOrderTx } = await import('../chain');
+      const hash = await createOrderTx(to.trim() as Address, parseUnits(amount.trim(), 18), parseEther(price.trim()), Math.floor(Date.now() / 1000) + minutes * 60);
+      step('Posted. Reading the order back from Sepolia');
+      await refreshOrders();
+      const posted = getOrders().find((o) => o.chain?.createTx === hash);
+      if (posted) open(posted.id);
+      return { text: 'Order posted', tx: hash, chain: 'sepolia' };
+    });
   }
 
   return (
@@ -169,8 +185,9 @@ function NewOrder() {
         </div>
         <p className="modal__terms">If nobody fills it by {clock(Date.now() + minutes * 60_000)}, you can take your <b>{price || '0'} ETH</b> back 30 minutes later.</p>
         <div className="modal__actions">
-          <button type="button" className="btn btn--secondary" onClick={close}>Cancel</button>
-          <button type="submit" className="btn btn--primary">{PREVIEW ? 'Post order (simulated)' : 'Post order'}</button>
+          <TxStatus state={tx} />
+          <button type="button" className="btn btn--secondary" onClick={close} disabled={!!tx.busy}>Cancel</button>
+          <button type="submit" className="btn btn--primary" disabled={!!tx.busy}>{PREVIEW ? 'Post order (simulated)' : 'Post order'}</button>
         </div>
     </form>
   );
