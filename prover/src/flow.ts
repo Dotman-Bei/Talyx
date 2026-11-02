@@ -1,5 +1,5 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { BaseError, ContractFunctionRevertedError, type Address, type Hex } from 'viem';
+import { BaseError, ContractFunctionRevertedError, parseEther, parseUnits, type Address, type Hex } from 'viem';
 import type { ApiPromise } from '@polkadot/api';
 import { stringToU8a } from '@polkadot/util';
 import { buildImport, buildSlotProof, findJustified, verifyImport, verifySlotProof } from './chain.ts';
@@ -64,6 +64,25 @@ export async function deploySepolia(api: ApiPromise, fillBook: Address, claimWin
     talyxEscrow: { address: escrowReceipt.contractAddress, tx: escrowTx, block: Number(escrowReceipt.blockNumber), fillBook, trieId, claimWindow: Number(claimWindow) },
   });
   console.log('\nset TALYX_STATE_ROOTS, TALYX_ESCROW and TALYX_FILLBOOK in prover/.env, and the VITE_* addresses in web/.env');
+}
+
+/** Post an order on Sepolia: deliver `amount` tPOT to `recipient` on V3 within `minutes`, escrowing `priceEth`. */
+export async function createOrder(recipient: Address, amount: string, priceEth: string, minutes: number) {
+  const escrow = addressFromEnv('TALYX_ESCROW');
+  const wallet = sepoliaWallet();
+  const amountV3Wei = parseUnits(amount, 18);
+  const deadline = BigInt(Math.floor(Date.now() / 1000) + minutes * 60);
+  const { abi } = artifact('TalyxEscrow');
+  const { request, result } = await sepoliaPublic.simulateContract({
+    account: wallet.account, address: escrow, abi, functionName: 'createOrder', args: [recipient, amountV3Wei, deadline], value: parseEther(priceEth),
+  });
+  const hash = await wallet.writeContract(request);
+  const receipt = await sepoliaPublic.waitForTransactionReceipt({ hash });
+  log('order', result);
+  log('create tx', hash);
+  log('gas used', receipt.gasUsed);
+  log('deliver', `${amount} tPOT to ${recipient} on V3 by ${new Date(Number(deadline) * 1000).toISOString()}`);
+  log('escrowed', `${priceEth} ETH`);
 }
 
 /** Pay an order on V3 through FillBook. The payee defaults to the filler's own address. */
@@ -180,7 +199,9 @@ export async function forgeClaim(api: ApiPromise, orderId: bigint, tamper: strin
   else throw new Error('tamper with payee, time, block or order:<id>');
   for (const [label, args] of [['real proof', real], [`forged (${tamper})`, forged]] as const) {
     try {
-      await sepoliaPublic.simulateContract({ address: addressFromEnv('TALYX_ESCROW'), abi: artifact('TalyxEscrow').abi, functionName: 'claim', args: claimCall(args) });
+      // the escrow's ABI plus BeefyStateRoots' errors, so a revert from stateRootOf (UnknownBlock) decodes by name
+      const abi = [...artifact('TalyxEscrow').abi, ...artifact('BeefyStateRoots').abi.filter((x) => x.type === 'error')];
+      await sepoliaPublic.simulateContract({ address: addressFromEnv('TALYX_ESCROW'), abi, functionName: 'claim', args: claimCall(args) });
       log(label, 'would succeed');
     } catch (e) {
       const revert = e instanceof BaseError ? e.walk((x) => x instanceof ContractFunctionRevertedError) : null;

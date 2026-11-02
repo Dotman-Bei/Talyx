@@ -1,7 +1,7 @@
 #!/usr/bin/env -S npx tsx
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { buildImport, buildSlotProof, connect, findJustified, verifyImport, verifySlotProof } from './chain.ts';
-import { checkSlot, claim, deployFillBook, deploySepolia, fill, forgeClaim, importBlock, refund, trieIdOf } from './flow.ts';
+import { checkSlot, claim, createOrder, deployFillBook, deploySepolia, fill, forgeClaim, importBlock, refund, trieIdOf } from './flow.ts';
 import type { Address } from 'viem';
 
 // talyx: build and check Portaldot V3 proofs against the public RPC. Usage: npm run talyx -- <command> [args]
@@ -19,6 +19,8 @@ const USAGE = `talyx <command>
   deploy-sepolia --fillbook <addr> [--window <s>]
                                           deploy BeefyStateRoots and TalyxEscrow (claim window, default 1800 s)
   trie-id <contract>                      Revive.AccountInfoOf: trie id and code hash
+  create-order <recipient> <tPOT> <ETH> [--minutes <m>]
+                                          post an order on Sepolia (deadline default 60 min)
   fill <orderId> [--payee <addr>]         pay an order on V3 through FillBook
   check-slot <orderId>                    the fill record under blake2_256(slot), as the escrow expects it
   import [<B>]                            import a signed block (default: the latest) into BeefyStateRoots
@@ -69,6 +71,7 @@ async function main() {
       case 'deploy-fillbook': await deployFillBook(api); break;
       case 'deploy-sepolia': await deploySepolia(api, (flag('fillbook') ?? process.env.TALYX_FILLBOOK) as Address, BigInt(flag('window') ?? 1800)); break;
       case 'trie-id': console.log(json(await trieIdOf(api, args[1]))); break;
+      case 'create-order': await createOrder(args[1] as Address, args[2], args[3], Number(flag('minutes') ?? 60)); break;
       case 'fill': await fill(BigInt(args[1]), flag('payee') as Address | undefined); break;
       case 'check-slot': await checkSlot(api, BigInt(args[1])); break;
       case 'import': await importBlock(api, args[1] ? Number(args[1]) : await findJustified(api)); break;
