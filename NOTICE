@@ -1,0 +1,37 @@
+Talyx
+Copyright 2026 the Talyx authors. Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+All contracts, the prover and the web app were written for Talyx during the Portaldot Hacker House 2026
+(14 October to 6 November 2026). Third-party code and data it relies on:
+
+Contracts (contracts/)
+  forge-std (git submodule, commit dc647cc030d9d65910d8f1172a0cde48d7106e32)
+    https://github.com/foundry-rs/forge-std, MIT / Apache-2.0. Tests only.
+  blake2b-solidity, https://github.com/dhl/blake2b-solidity, MIT.
+    Not copied. src/lib/Blake2b.sol is written for Talyx and follows the same approach: BLAKE2b driven through the
+    EIP-152 F precompile.
+  solidity-merkle-trees (PolkadotTrie), https://github.com/polytope-labs/solidity-merkle-trees, Apache-2.0.
+    Not copied. src/lib/Trie.sol is written for Talyx and walks the same Substrate trie node format, with
+    blake2b-256 node hashes and layout V1.
+  BridgeZero, https://github.com/jonathan-moore58/bridge-zero, Apache-2.0.
+    Read as a reference for how Revive contract storage sits in a child trie. No code is used.
+
+Prover (prover/)
+  @polkadot/api 17.0.2, @polkadot/util 14.0.3, @polkadot/util-crypto 14.0.3 (Apache-2.0)
+  viem 2.57.14 (MIT)
+  tsx, typescript (MIT / Apache-2.0), development only
+
+Web (web/)
+  react, react-dom (MIT), viem 2.57.14 (MIT), @noble/hashes 2.4.0 (MIT)
+  vite, @vitejs/plugin-react, typescript (MIT / Apache-2.0), development only
+  Switzer typeface, served by Fontshare (Fontshare EULA); JetBrains Mono, served by Google Fonts (SIL Open Font License)
+
+Pictures (web/public/assets, credited on the pages and in web/public/assets/credits.json)
+  "Medieval tally sticks" by Winchester City Council Museums, CC BY-SA 2.0, via Wikimedia Commons
+  "SAM PC 1 - Tally sticks 1 - Item 06" and "Overview", CC BY 3.0, via Wikimedia Commons (resized)
+  "Portrait of an Elderly Man Holding a Tally Stick" by the Master of the Legend of the Magdalen, public domain
+  "EB1911 Tally - tally stick (diagram)", Encyclopaedia Britannica (1911), public domain
+
+Chain data
+  Test vectors and fixtures in prover/fixtures and prd-derived constants were read from the public Portaldot V3
+  testnet RPC (wss://test-node-v3.portaldot.dev).
