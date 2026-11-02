@@ -33,6 +33,7 @@ EVM RPC. Proven off-chain and in `contracts/test/LiveFillBook.t.sol` under signe
 | 1 | importBlock (state root of 293,346) | Sepolia | `0x0ebcdc9f1e94f44ae444b41d609f5e11d3c6785ed01a5342af14829fbfed1bcb` | 296,148 |
 | 1 | **claim, 0.0001 ETH to the recorded payee** | Sepolia | `0x9f93af028ed8e6ac8d87861816cabc7a83173c61f709266ee5adfbf172755e0c` | 488,319 |
 | 2 | createOrder: 0.25 tPOT, 2-minute deadline, left unfilled | Sepolia | `0xae5d7e59cfc83623b50ebf1612b98821af6b7dddbd2fbd9c516081ec25b6c815` | 589,236 |
+| 2 | **refund after deadline + 30-minute window, 0.00005 ETH back to the requester** | Sepolia | `0xaeaeb111dff311ee524061eb09ea5c82c5791834eb0aeb34f0986b687e1022ae` | 45,091 |
 | 3 | createOrder: 0.5 tPOT for 0.0001 ETH | Sepolia | `0x86493b7de8b8d26e7f59550b63923779ba4fc9a4fa5be99e9d40c7e82f949609` | |
 | 3 | fill, V3 block 293,378 | V3 | `0xd21b2202a57fff03428827b7acfe434953f9d277022284f847ad01cacdf1d6a6` | |
 | 3 | importBlock (state root of 293,378) | Sepolia | `0x5ffecdfd55cf1ad1497faa428274251766e0d341fe4f865aec7cdcb223840ae3` | 292,436 |
@@ -62,5 +63,4 @@ calldata (two imports there: 144,323 and 129,533), so the Sepolia figures are th
 
 ## Still to record
 
-- A refund after deadline plus the 30-minute claim window (order 2).
 - Fills from a second, unrelated filler wallet (prd.md DoD 21.4).
