@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { PREVIEW, clock, fillOrder, isAddress, stageOf, useOrders } from '../orders';
+import type { Address } from 'viem';
+import { PREVIEW, clock, fillOrder, isAddress, refreshOrders, stageOf, useOrders } from '../orders';
 import { useV3 } from '../v3';
 import { useWallet } from '../wallet';
-import { Addr, go, shortAddr, useNow } from '../ui';
+import { Addr, TxStatus, go, shortAddr, useNow } from '../ui';
+import { useAction } from '../useAction';
 
 export function FillQueue() {
   const orders = useOrders();
@@ -11,6 +13,7 @@ export function FillQueue() {
   const now = useNow();
   const [payee, setPayee] = useState(wallet.address ?? '');
   const [touched, setTouched] = useState(false);
+  const tx = useAction();
 
   const open = orders.filter((o) => stageOf(o, now) === 'open').sort((a, b) => a.deadline - b.deadline);
   const need = open.reduce((s, o) => s + Number(o.amount), 0);
@@ -20,9 +23,21 @@ export function FillQueue() {
   function fill(id: number) {
     setTouched(true);
     if (!payeeOk) return;
-    const filler = wallet.address ?? payee;
-    fillOrder(id, { filler, payee: payee.trim(), block: v3.best ?? 0, at: Date.now() });
-    go(`/orders/${id}`);
+    if (PREVIEW) {
+      fillOrder(id, { filler: wallet.address ?? payee, payee: payee.trim(), block: v3.best ?? 0, at: Date.now() });
+      go(`/orders/${id}`);
+      return;
+    }
+    const o = orders.find((x) => x.id === id);
+    if (!o?.chain) return;
+    tx.run(`Confirm the fill of order ${id} in MetaMask, on Portaldot V3`, async (step) => {
+      const { fillTx } = await import('../chain');
+      const hash = await fillTx(o.chain!, payee.trim() as Address);
+      step('Filled. Reading it back from V3');
+      await refreshOrders();
+      go(`/orders/${id}`);
+      return { text: `Filled order ${id}`, tx: hash, chain: 'v3' };
+    });
   }
 
   return (
@@ -38,6 +53,7 @@ export function FillQueue() {
         </div>
       </div>
       {PREVIEW && <p className="notice" role="note">Preview: fills are simulated, but each one takes the current V3 block and waits for a real BEEFY signature.</p>}
+      {(tx.busy || tx.error || tx.done) && <div className="txbar"><TxStatus state={tx} /></div>}
 
         <section className="panel" aria-labelledby="queue-title">
           <header><h2 id="queue-title">Open orders</h2><span className="meta">Soonest deadline first</span></header>
@@ -63,7 +79,7 @@ export function FillQueue() {
                       <td><Addr value={o.recipient} /></td>
                       <td className="r">{o.price} <span className="unit">ETH</span></td>
                       <td>{clock(o.deadline)} <span className="unit">· {Math.max(0, Math.round((o.deadline - now) / 60_000))} min left</span></td>
-                      <td className="r"><button className="btn btn--ghost btn--sm" onClick={() => fill(o.id)}>Fill</button></td>
+                      <td className="r"><button className="btn btn--ghost btn--sm" onClick={() => fill(o.id)} disabled={!!tx.busy}>Fill</button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -73,7 +89,7 @@ export function FillQueue() {
                   <li key={o.id}>
                     <span className="line1"><b>Order {o.id} · {o.amount} tPOT</b></span>
                     <span className="sub">Earn {o.price} ETH · to {shortAddr(o.recipient)} · by {clock(o.deadline)}</span>
-                    <span className="end"><button className="btn btn--ghost btn--sm" onClick={() => fill(o.id)}>Fill</button></span>
+                    <span className="end"><button className="btn btn--ghost btn--sm" onClick={() => fill(o.id)} disabled={!!tx.busy}>Fill</button></span>
                   </li>
                 ))}
               </ul>
