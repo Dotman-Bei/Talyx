@@ -133,6 +133,13 @@ function connect() {
   };
 }
 
+/** A JSON-RPC call on the shared V3 connection, opening it first when needed. */
+export async function v3Call<T>(method: string, params: unknown[] = []): Promise<T> {
+  if (!started) { started = true; connect(); }
+  for (let i = 0; i < 60 && (!ws || ws.readyState !== WebSocket.OPEN); i++) await new Promise((r) => setTimeout(r, 250));
+  return call<T>(method, params);
+}
+
 export function retry() {
   try { ws?.close(); } catch { /* already closed */ }
   connect();
