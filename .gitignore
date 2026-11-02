@@ -1,0 +1,5 @@
+# inspector screenshots and reports from the design-taste-frontend skill
+.taste-skill/
+node_modules/
+dist/
+.env
