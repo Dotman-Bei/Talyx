@@ -1,0 +1,60 @@
+/* Talyx tokens, shared by the public pages and the demo app (docs/FRONTEND.md §3). */
+:root {
+  --bg: #f8f8f8;
+  --surface: #eeeeee;
+  --white: #ffffff;
+  --ink: #0a0a0a;
+  --display: #161616;
+  --muted: #5f5f5f;
+  --accent: #1f6b3a;
+  --accent-strong: #17552d;
+  --accent-ink: #ffffff;
+
+  /* the two halves: mint is Sepolia, pink is V3 */
+  --mint: #c3edce;
+  --pink: #f8c7c9;
+  --mint-deep: #1f6b3a;
+  --pink-deep: #a3324a;
+
+  --positive: #247b50;
+  --pill-positive-bg: #dcfae5;
+  --pill-positive-ink: #04250e;
+  --negative: #c4242a;
+  --pill-negative-bg: #ffedea;
+  --pill-negative-ink: #831c1e;
+  --pill-warning-bg: #fffbeb;
+  --pill-warning-ink: #92400e;
+
+  --font: "Switzer", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --t-press: 140ms;
+  --t-hover: 180ms;
+  --t-ui: 240ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; font-kerning: normal; }
+h1, h2, h3, h4, p, figure, blockquote, ul, ol, dl, dd { margin: 0; }
+ul[class], ol[class] { padding: 0; list-style: none; }
+img, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+a { color: inherit; }
+::selection { background: var(--ink); color: var(--white); }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.mono, code, pre { font-family: var(--font-mono); font-variant-ligatures: none; }
+.nums { font-variant-numeric: tabular-nums; }
+
+/* pills, shared by the interface fragments and the app */
+.pill { display: inline-flex; align-items: center; flex: none; white-space: nowrap; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; line-height: 1; }
+.pill--ok { background: var(--pill-positive-bg); color: var(--pill-positive-ink); }
+.pill--bad { background: var(--pill-negative-bg); color: var(--pill-negative-ink); }
+.pill--wait { background: var(--pill-warning-bg); color: var(--pill-warning-ink); }
+.pill--plain { background: #efefef; color: #3a3a3a; }
