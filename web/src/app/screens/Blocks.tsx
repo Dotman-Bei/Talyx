@@ -1,12 +1,23 @@
-import { CONTRACTS } from '../orders';
+import { useEffect, useState } from 'react';
+import { CONTRACTS, PREVIEW } from '../orders';
 import { nextJustified, retry, useV3 } from '../v3';
 import { AUTHORITIES, KEYSET_COMMITMENT } from '../../shared/beefy';
-import { fmtBlock, useNow } from '../ui';
+import { TxLink, fmtBlock, useNow } from '../ui';
 
 export function Blocks() {
   const v3 = useV3();
   const now = useNow();
   const next = nextJustified(v3);
+  // V3 block number (B-1) => import tx, from BeefyStateRoots' Imported events
+  const [imported, setImported] = useState<Map<number, string> | null>(null);
+  useEffect(() => {
+    if (PREVIEW) return;
+    let alive = true;
+    const load = () => import('../chain').then((c) => c.loadImported()).then((m) => { if (alive) setImported(m); }).catch(() => {});
+    load();
+    const t = setInterval(load, 30_000);
+    return () => { alive = false; clearInterval(t); };
+  }, []);
   const loading = v3.status === 'connecting';
   const updated = v3.updatedAt ? Math.round((now - v3.updatedAt) / 1000) : null;
 
@@ -35,7 +46,7 @@ export function Blocks() {
         <div className="kpi kpi--lead"><span>Next signed block</span><strong>{loading || !next ? <i className="skeleton" /> : `~${next.seconds} s`}</strong><small>{next ? `near block ${fmtBlock(next.block)}` : 'waiting for the first one'}</small></div>
         <div className="kpi"><span>Best block</span><strong>{loading ? <i className="skeleton" /> : fmtBlock(v3.best)}</strong><small>a new one every 6 s</small></div>
         <div className="kpi"><span>BEEFY-finalized</span><strong>{loading ? <i className="skeleton" /> : fmtBlock(v3.finalized)}</strong><small>{v3.best && v3.finalized ? `${v3.best - v3.finalized} behind best` : '–'}</small></div>
-        <div className="kpi"><span>Imported on Sepolia</span><strong>{CONTRACTS.stateRoots ? '–' : '0'}</strong><small>{CONTRACTS.stateRoots ? 'BeefyStateRoots' : 'contract not deployed yet'}</small></div>
+        <div className="kpi"><span>Imported on Sepolia</span><strong>{!CONTRACTS.stateRoots ? '0' : imported ? imported.size : <i className="skeleton" />}</strong><small>{CONTRACTS.stateRoots ? 'blocks in BeefyStateRoots' : 'contract not deployed yet'}</small></div>
       </div>
 
       <div className="grid">
@@ -53,7 +64,7 @@ export function Blocks() {
                   <td><code title={j.hash}>{j.hash.slice(0, 10)}…{j.hash.slice(-6)}</code></td>
                   <td className="r">{j.setId}</td>
                   <td className="r"><span className={`pill ${j.signers === 2 ? 'pill--ok' : 'pill--bad'}`}>{j.signers} of 2 keys</span></td>
-                  <td className="muted">–</td>
+                  <td>{imported?.has(j.number - 1) ? <TxLink hash={imported.get(j.number - 1)} chain="sepolia" /> : <span className="muted">–</span>}</td>
                 </tr>
               ))}
             </tbody>
