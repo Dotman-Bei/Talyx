@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Talyx: paid only when the halves fit</title>
+  <meta name="description" content="Talyx is an escrow on Sepolia that pays a filler only after Portaldot V3's own BEEFY proof shows your tPOT reached your address.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><!-- hex bytes, addresses and code only. taste-skill-ignore -->
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <a class="wordmark" href="/" aria-label="Talyx home">
+      <svg class="wordmark__mark" viewBox="0 0 28 20" aria-hidden="true"><path d="M0 0h28v9H18l-3-3-3 3H0z" fill="var(--mint)"/><path d="M0 11h12l3 3 3-3h10v9H0z" fill="var(--pink)"/></svg>
+      Talyx
+    </a>
+    <nav class="nav__links" aria-label="Sections">
+      <a class="link" href="#how">How it works</a>
+      <a class="link" href="#name">The name</a>
+      <a class="link" href="#builders">Builders</a>
+      <a class="link" href="#questions">Questions</a>
+      <a class="link" href="/verify/">Verify</a>
+    </nav>
+    <a class="button button--small" href="/app/">Open the demo</a>
+    <details class="nav__menu">
+      <summary>Menu</summary>
+      <nav class="nav__sheet" aria-label="Sections">
+        <a href="#how">How it works</a>
+        <a href="#name">The name</a>
+        <a href="#builders">Builders</a>
+        <a href="#questions">Questions</a>
+        <a href="/verify/">Verify</a>
+      </nav>
+    </details>
+  </header>
+
+  <main id="main">
+    <!-- 1. Hero: a live BEEFY check on a notched stage -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <h1 class="hero__title display" id="hero-title" data-rise>Paid only when<br> the halves&nbsp;fit</h1>
+      <div class="hero__body">
+        <p class="lead" data-rise style="--i:1">Talyx is an escrow on Sepolia that pays a filler only after Portaldot V3’s own BEEFY proof shows your tPOT reached your address.</p>
+        <div class="hero__actions" data-rise style="--i:2">
+          <a class="button button--notch" href="/app/">Open the demo</a>
+          <a class="link link--under" href="/verify/">Check it yourself</a>
+        </div>
+        <p class="hero__note small" data-rise style="--i:3">The panel holds the 48 bytes V3’s two validators signed for block 279,494, with their real signatures. Your browser recovers both signers. Change one byte and the check fails, as the escrow’s would.</p>
+      </div>
+
+      <div class="stage">
+        <div class="forger" data-ui data-forger>
+          <div class="forger__head">
+            <p class="forger__title">Commitment V3 signed for block <span class="nums" data-block>279,494</span></p>
+            <span class="pill pill--ok" data-pill>2 of 2 match</span>
+          </div>
+          <ul class="forger__legend" aria-hidden="true">
+            <li><i class="sw sw--payload"></i>Payload “mh”</li>
+            <li><i class="sw sw--root"></i>MMR root</li>
+            <li><i class="sw sw--block"></i>Block number</li>
+            <li><i class="sw sw--set"></i>Validator set <span class="nums" data-set>471</span></li>
+          </ul>
+          <div class="forger__bytes" role="group" aria-label="The 48 commitment bytes. Use the arrow keys to move, Enter to change a byte." data-bytes>
+            <!-- filled from the real commitment; static copy for readers without script. taste-skill-ignore -->
+            <code class="byte byte--payload">04</code><code class="byte byte--payload">6d</code><code class="byte byte--payload">68</code><code class="byte byte--payload">80</code><code class="byte byte--root">8d</code><code class="byte byte--root">ca</code><code class="byte byte--root">1d</code><code class="byte byte--root">c9</code><code class="byte byte--root">b5</code><code class="byte byte--root">11</code><code class="byte byte--root">f3</code><code class="byte byte--root">5a</code><code class="byte byte--root">70</code><code class="byte byte--root">fa</code><code class="byte byte--root">4d</code><code class="byte byte--root">da</code><code class="byte byte--root">93</code><code class="byte byte--root">7a</code><code class="byte byte--root">47</code><code class="byte byte--root">73</code><code class="byte byte--root">b3</code><code class="byte byte--root">c3</code><code class="byte byte--root">7f</code><code class="byte byte--root">53</code><code class="byte byte--root">29</code><code class="byte byte--root">ae</code><code class="byte byte--root">79</code><code class="byte byte--root">08</code><code class="byte byte--root">ec</code><code class="byte byte--root">0a</code><code class="byte byte--root">b8</code><code class="byte byte--root">ce</code><code class="byte byte--root">81</code><code class="byte byte--root">57</code><code class="byte byte--root">82</code><code class="byte byte--root">9d</code><code class="byte byte--block">c6</code><code class="byte byte--block">43</code><code class="byte byte--block">04</code><code class="byte byte--block">00</code><code class="byte byte--set">d7</code><code class="byte byte--set">01</code><code class="byte byte--set">00</code><code class="byte byte--set">00</code><code class="byte byte--set">00</code><code class="byte byte--set">00</code><code class="byte byte--set">00</code><code class="byte byte--set">00</code><!-- taste-skill-ignore -->
+          </div>
+          <dl class="forger__signers">
+            <div class="signer" data-signer="0">
+              <dt>Signature 1</dt>
+              <dd data-addr><code>0x4d13…b421</code></dd>
+              <dd class="signer__state" data-state>BEEFY key 1</dd>
+            </div>
+            <div class="signer" data-signer="1">
+              <dt>Signature 2</dt>
+              <dd data-addr><code>0x4a69…7413</code></dd>
+              <dd class="signer__state" data-state>BEEFY key 2</dd>
+            </div>
+          </dl>
+          <div class="forger__foot">
+            <p class="forger__verdict" data-verdict aria-live="polite">Both BEEFY keys signed these bytes. The halves fit.</p>
+            <button class="forger__undo" type="button" data-undo disabled>Undo the change</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Proof board: who holds the keys on the routes onto V3 today -->
+    <section class="board wrap section" aria-labelledby="board-title">
+      <div class="board__grid">
+        <div class="tile tile--head" data-reveal>
+          <h2 class="tile__heading" id="board-title">Who holds the keys today</h2>
+        </div>
+        <article class="tile" data-reveal style="--i:1">
+          <h3 class="tile__name">Official bridge</h3>
+          <p>An operator. Its page calls transfers irreversible and gives the arrival time as “patience is key”.</p>
+        </article>
+        <article class="tile" data-reveal style="--i:2">
+          <h3 class="tile__name">BridgeZero, way back</h3>
+          <p>A 2-of-3 committee. On the testnet, one operator holds all three keys.</p>
+        </article>
+        <article class="tile" data-reveal style="--i:1">
+          <h3 class="tile__name">PASTX</h3>
+          <p>A single trusted relayer.</p>
+        </article>
+        <article class="tile" data-reveal style="--i:2">
+          <h3 class="tile__name">iBridge</h3>
+          <p>No one yet. Listed for V3.0, with custody, fees and launch awaiting confirmation.</p>
+        </article>
+        <article class="tile tile--past" data-reveal style="--i:3">
+          <h3 class="tile__name">Harmony, 2022</h3>
+          <p>About $100M lost after an attacker controlled 2 of its 5 multisig keys.</p>
+        </article>
+        <article class="tile tile--past" data-reveal style="--i:4">
+          <h3 class="tile__name">Orbit, 2024</h3>
+          <p>About $81M lost after its signers were compromised.</p>
+        </article>
+      </div>
+      <p class="board__close statement" data-reveal>Talyx holds nothing. A filler risks only their own tPOT, and the ETH moves only on V3’s signed proof.</p>
+    </section>
+
+    <!-- 3. How it works: the same order, further along in each field -->
+    <section class="fields" id="how" aria-labelledby="how-title">
+      <div class="field field--mint">
+        <h2 class="field__heading" id="how-title">One order, two chains</h2>
+        <div class="ocard" data-ui>
+          <p class="ocard__id">Order 7 <span class="pill pill--plain">Open</span></p>
+          <dl class="ocard__rows">
+            <div><dt>Deliver</dt><dd class="nums">0.5 tPOT</dd></div>
+            <div><dt>To on V3</dt><dd><code>0x3f2a…a91c</code></dd></div>
+            <div><dt>Escrow</dt><dd class="nums">0.0001 ETH</dd></div>
+            <div><dt>Deadline</dt><dd class="nums">14:30 UTC</dd></div>
+          </dl>
+        </div>
+        <p class="field__clause">First the order lands on Sepolia.</p>
+      </div>
+      <div class="field field--pink">
+        <div class="ocard" data-ui>
+          <p class="ocard__id">Order 7 <span class="pill pill--wait">Filled</span></p>
+          <dl class="ocard__rows">
+            <div><dt>Deliver</dt><dd class="nums">0.5 tPOT</dd></div>
+            <div><dt>To on V3</dt><dd><code>0x3f2a…a91c</code></dd></div>
+            <div><dt>Filled by</dt><dd><code>0x8c41…02be</code></dd></div>
+            <div><dt>V3 block</dt><dd class="nums">285,190</dd></div>
+          </dl>
+          <p class="ocard__note">FillBook record written in the same call that paid.</p>
+        </div>
+        <p class="field__clause">Then any filler pays it on V3.</p>
+      </div>
+      <div class="field field--white">
+        <div class="ocard" data-ui>
+          <p class="ocard__id">Order 7 <span class="pill pill--wait">Signed</span></p>
+          <dl class="ocard__rows">
+            <div><dt>Filled in</dt><dd class="nums">285,190</dd></div>
+            <div><dt>Signed in</dt><dd class="nums">285,197</dd></div>
+            <div><dt>Signatures</dt><dd class="nums">2 of 2</dd></div>
+            <div><dt>Validator set</dt><dd class="nums">480</dd></div>
+          </dl>
+          <p class="ocard__note">The next stored justification, 7 blocks after the fill.</p>
+        </div>
+        <p class="field__clause">V3’s two BEEFY keys sign a later block.</p>
+      </div>
+      <div class="field field--ink">
+        <div class="ocard" data-ui>
+          <p class="ocard__id">Order 7 <span class="pill pill--ok">Claimed</span></p>
+          <dl class="ocard__rows">
+            <div><dt>Paid</dt><dd class="nums">0.0001 ETH</dd></div>
+            <div><dt>To</dt><dd><code>0x8c41…02be</code></dd></div>
+            <div><dt>State root</dt><dd class="nums">block 285,196</dd></div>
+            <div><dt>Checked</dt><dd>4 proofs</dd></div>
+          </dl>
+          <p class="ocard__note">Signatures, MMR root, header and storage proof.</p>
+        </div>
+        <p class="field__clause">The proof pays the filler.</p>
+      </div>
+    </section>
+
+    <!-- 4. The name: a square plate with three tabs -->
+    <section class="plate section" id="name" aria-labelledby="plate-title">
+      <div class="plate__picture">
+        <figure class="plate__frame" data-reveal>
+          <div class="plate__shutter shutter">
+          <img class="is-shown" data-panel-img="stick" src="/assets/tally-halves.jpg" width="1000" height="557" alt="The two halves of a medieval tally stick, notched along one edge and inscribed in ink" decoding="async">
+          <img data-panel-img="halves" src="/assets/tally-split.jpg" width="1400" height="855" alt="A wooden tally stick with its split line and notches visible, dated 1843" decoding="async">
+          <img data-panel-img="check" src="/assets/portrait-tally.jpg" width="1200" height="1606" alt="Painted portrait of an elderly man in a black hat holding a notched tally stick" decoding="async">
+          </div>
+        </figure>
+        <p class="plate__caption small" data-caption>Medieval tally halves, Winchester City Council Museums.</p>
+      </div>
+      <div class="plate__text">
+        <div class="plate__tabs" role="tablist" aria-label="The name">
+          <button role="tab" id="tab-stick" aria-controls="panel-stick" aria-selected="true" data-tab="stick">The stick</button>
+          <button role="tab" id="tab-halves" aria-controls="panel-halves" aria-selected="false" tabindex="-1" data-tab="halves">The halves</button>
+          <button role="tab" id="tab-check" aria-controls="panel-check" aria-selected="false" tabindex="-1" data-tab="check">The check</button>
+        </div>
+        <div class="plate__panels">
+          <div role="tabpanel" id="panel-stick" aria-labelledby="tab-stick" data-panel="stick" data-caption-text="Medieval tally halves, Winchester City Council Museums.">
+            <h2 class="head" id="plate-title">Notched, then split</h2>
+            <p>A medieval tally was notched with the amount owed, then split lengthwise. Each party kept one half, and the debt was settled only when the two halves fit.</p>
+          </div>
+          <div role="tabpanel" id="panel-halves" aria-labelledby="tab-halves" data-panel="halves" hidden data-caption-text="A notched tally stick dated 1843, its split line running its length.">
+            <h2 class="head">Two halves, two chains</h2>
+            <p>In Talyx the order on Sepolia is one half and the fill on V3 is the other. The FillBook contract records who filled, for whom and how much, in the same call that pays.</p>
+          </div>
+          <div role="tabpanel" id="panel-check" aria-labelledby="tab-check" data-panel="check" hidden data-caption-text="Portrait of an Elderly Man Holding a Tally Stick, Master of the Legend of the Magdalen.">
+            <h2 class="head">Checked, not held</h2>
+            <p>Nobody holds the halves together. The escrow checks V3’s signed proof that the fill exists, byte for byte, and pays only if every byte matches.</p>
+          </div>
+        </div>
+        <div class="plate__cells">
+          <a class="cell cell--ink" href="/app/">Open the demo</a>
+          <a class="cell cell--tone" href="/verify/">Check it yourself</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- The band between the two halves of the page: a real Exchequer tally -->
+    <figure class="band" aria-labelledby="band-caption">
+      <img src="/assets/exchequer-tally-diagram.jpg" width="1427" height="208" alt="Drawing of an English Exchequer tally: a long stick with notches of different widths cut along its lower edge and Latin written along its face" loading="lazy" decoding="async">
+      <figcaption class="band__caption small" id="band-caption">An English Exchequer tally, drawn for the 1911 Encyclopaedia Britannica. The width of each notch was the amount: a palm for a thousand pounds, a barleycorn for one.</figcaption>
+    </figure>
+
+    <!-- 5. Builders: close-ups of the parts other projects can use -->
+    <section class="mosaic wrap section" id="builders" aria-labelledby="builders-title">
+      <div class="mosaic__grid">
+        <div class="mtile mtile--head" data-reveal>
+          <h2 class="mtile__heading" id="builders-title">Parts you can build on</h2>
+        </div>
+        <article class="mtile mtile--a mtile--mint" data-reveal style="--i:1">
+          <div class="zoom" data-ui aria-hidden="true"><code class="zoom__chip">0xc0</code><span class="zoom__figure nums">2/2</span></div>
+          <div class="mtile__cap"><h3>Both keys, every time</h3><p>V3 runs two BEEFY validators. The escrow requires both signatures.</p></div>
+        </article>
+        <article class="mtile mtile--b mtile--white" data-reveal style="--i:2">
+          <div class="zoom" data-ui aria-hidden="true"><span class="zoom__figure nums">48&thinsp;s</span></div>
+          <div class="mtile__cap"><h3>Claimable in about a minute</h3><p>V3 stores a signed justification every 8 blocks.</p></div>
+        </article>
+        <article class="mtile mtile--c mtile--surface" data-reveal>
+          <div class="zoom zoom--code" data-ui aria-hidden="true">
+            <code><span class="k">stateRootOf</span>(0x9b2e…41d0)</code>
+            <code><span class="r">→</span> (0x5c1d…e807, 285196)</code>
+          </div>
+          <div class="mtile__cap"><h3>Proven V3 state roots</h3><p>Any Sepolia contract can read V3 state that BEEFY signed, through the same interface as BridgeZero’s IFinalizedStateRoots.</p></div>
+        </article>
+        <article class="mtile mtile--d mtile--pink" data-reveal style="--i:1">
+          <div class="zoom zoom--errors" data-ui aria-hidden="true">
+            <code class="zoom__err">SlotMismatch</code>
+            <code class="zoom__err">BadSigner</code>
+            <code class="zoom__err">MmrRootMismatch</code>
+          </div>
+          <div class="mtile__cap"><h3>Forgeries fail by name</h3><p>Every tampered proof reverts with a named error.</p></div>
+        </article>
+        <article class="mtile mtile--e mtile--white" data-reveal style="--i:2">
+          <div class="zoom" data-ui aria-hidden="true"><span class="zoom__button">Refund opens 15:00</span></div>
+          <div class="mtile__cap"><h3>Your ETH comes back</h3><p>No fill by the deadline? After a 30-minute window, take a refund.</p></div>
+        </article>
+        <article class="mtile mtile--f mtile--mint" data-reveal style="--i:3">
+          <div class="zoom" data-ui aria-hidden="true"><span class="zoom__input nums">0.5000 <b>tPOT</b></span></div>
+          <div class="mtile__cap"><h3>No 10,000× slips</h3><p>tPOT has 14 decimals, EVM units 18. Amounts must divide by 10⁴.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 6. Questions -->
+    <section class="faq wrap section" id="questions" aria-labelledby="faq-title">
+      <div class="faq__side">
+        <h2 class="head" id="faq-title">Fair questions</h2>
+        <figure class="faq__figure">
+          <img src="/assets/tallies-museum-case.jpg" width="1600" height="1250" alt="A museum case of wooden tally sticks: notched sticks on cords, stamped blocks and a long carved tally" loading="lazy" decoding="async">
+          <figcaption class="small">Tally sticks in a museum case, some still tied on their cords.</figcaption>
+        </figure>
+      </div>
+      <div class="faq__list">
+        <details class="qa" name="faq" open>
+          <summary><span>What do I still have to trust?</span><i class="qa__sign" aria-hidden="true"></i></summary>
+          <div class="qa__panel"><div><p>V3’s two BEEFY keys, which are probably development keys, and V3’s sudo key. Not a relayer, and not a committee. Talyx is testnet-only and unaudited.</p></div></div>
+        </details>
+        <details class="qa" name="faq">
+          <summary><span>What if nobody fills my order?</span><i class="qa__sign" aria-hidden="true"></i></summary>
+          <div class="qa__panel"><div><p>After the deadline plus a 30-minute claim window, you call refund and your ETH comes back. Claim and refund can never both happen.</p></div></div>
+        </details>
+        <details class="qa" name="faq">
+          <summary><span>Can the relayer steal or redirect the payment?</span><i class="qa__sign" aria-hidden="true"></i></summary>
+          <div class="qa__panel"><div><p>No. The claim pays the payee recorded on V3. A relayer can delay a claim; it cannot change who is paid.</p></div></div>
+        </details>
+        <details class="qa" name="faq">
+          <summary><span>Who are the fillers?</span><i class="qa__sign" aria-hidden="true"></i></summary>
+          <div class="qa__panel"><div><p>Anyone holding tPOT on V3. The filler script watches for new orders and fills them, and a filler earns the spread between the ETH escrowed and the tPOT sent.</p></div></div>
+        </details>
+        <details class="qa" name="faq">
+          <summary><span>What if the fill landed before the latest signed block?</span><i class="qa__sign" aria-hidden="true"></i></summary>
+          <div class="qa__panel"><div><p>State is cumulative. Any later signed block still holds the fill record, so the proof only needs the newest leaf of that block’s MMR.</p></div></div>
+        </details>
+        <details class="qa" name="faq">
+          <summary><span>Why must my amount divide by 10⁴?</span><i class="qa__sign" aria-hidden="true"></i></summary>
+          <div class="qa__panel"><div><p>tPOT has 14 decimals and EVM contracts count in 18. Anything finer than 10⁴ EVM units cannot exist on V3, so the escrow refuses it instead of rounding your tPOT into dust.</p></div></div>
+        </details>
+        <details class="qa" name="faq">
+          <summary><span>Why only onto V3, not back out?</span><i class="qa__sign" aria-hidden="true"></i></summary>
+          <div class="qa__panel"><div><p>Proofs flow out of V3, which is enough to protect you on the way in. Paying out of V3 would need a light client of the other chain running on V3; that direction is planned as Bonded Fast Exit.</p></div></div>
+        </details>
+        <details class="qa" name="faq">
+          <summary><span>Why does this need Portaldot V3?</span><i class="qa__sign" aria-hidden="true"></i></summary>
+          <div class="qa__panel"><div><p>V3 runs EVM contracts through Revive and signs its own BEEFY finality with plain secp256k1 keys that Solidity can check. Portaldot mainnet (spec 1002) has neither yet.</p></div></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 7. CTA: the create dialog, already open -->
+    <section class="cta" aria-labelledby="cta-title">
+      <div class="cta__words">
+        <h2 class="display" id="cta-title">Send the first half</h2>
+        <p>The demo opens with this order filled in. You sign it on Sepolia with MetaMask, and any filler can cut the other half on V3.</p>
+      </div>
+      <form class="dialog" data-ui action="/app/" method="get" data-cta-form>
+        <p class="dialog__title">New order</p>
+        <label class="dialog__label" for="cta-to">Deliver to on V3</label>
+        <input class="dialog__input" id="cta-to" name="to" value="0x3f2a9c4e1b7d8a06f5c2e9b13d4a7f60c81ea91c" spellcheck="false" autocomplete="off" aria-describedby="cta-to-help" pattern="^0x[0-9a-fA-F]{40}$" required>
+        <p class="dialog__help" id="cta-to-help">Your MetaMask address. It is the same on Sepolia and V3.</p>
+        <fieldset class="dialog__seg">
+          <legend class="dialog__label">Amount</legend>
+          <label><input type="radio" name="amount" value="0.5" checked><span>0.5 tPOT</span></label>
+          <label><input type="radio" name="amount" value="1"><span>1 tPOT</span></label>
+        </fieldset>
+        <p class="dialog__terms">Escrow <b class="nums" data-cta-price>0.0001 ETH</b>, deadline in 1 hour.</p>
+        <button class="dialog__submit" type="submit">Open the demo</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- 8. Footer: the name built from blocks -->
+  <footer class="foot">
+    <svg class="foot__mark" viewBox="0 0 1000 220" role="img" aria-label="Talyx">
+      <defs>
+        <mask id="m-t"><rect width="1000" height="220" fill="#fff"/><text x="98" y="205" text-anchor="middle">T</text></mask>
+        <mask id="m-a"><rect width="1000" height="220" fill="#fff"/><text x="299" y="205" text-anchor="middle">a</text></mask>
+        <mask id="m-l"><rect width="1000" height="220" fill="#fff"/><text x="500" y="205" text-anchor="middle">l</text></mask>
+        <mask id="m-y"><rect width="1000" height="220" fill="#fff"/><text x="701" y="190" text-anchor="middle">y</text></mask>
+        <mask id="m-x"><rect width="1000" height="220" fill="#fff"/><text x="902" y="205" text-anchor="middle">x</text></mask>
+      </defs>
+      <rect x="0" y="0" width="196" height="220" fill="var(--mint)" mask="url(#m-t)"/>
+      <rect x="201" y="66" width="196" height="154" fill="var(--pink)" mask="url(#m-a)"/>
+      <rect x="402" y="22" width="196" height="198" fill="var(--surface)" mask="url(#m-l)"/>
+      <rect x="603" y="44" width="196" height="176" fill="var(--mint)" mask="url(#m-y)"/>
+      <rect x="804" y="88" width="196" height="132" fill="var(--pink)" mask="url(#m-x)"/>
+    </svg>
+    <div class="foot__cols">
+      <nav aria-label="Product"><h2>Product</h2><a class="link" href="/app/">Demo</a><a class="link" href="/verify/">Verify</a><a class="link" href="#how">How it works</a></nav>
+      <nav aria-label="Build"><h2>Build</h2><a class="link" href="/verify/#contracts">State roots</a><a class="link" href="/verify/#cli">Prover CLI</a><a class="link" href="/verify/#tests">Forged-proof tests</a></nav>
+      <div><h2>Event</h2><p>Portaldot Hacker House 2026</p><p>Multi-Chain &amp; Cross-Chain Infra</p></div>
+      <div class="foot__trust"><h2>Trust</h2><p>Testnet only. Unaudited.</p><p>Trusts V3’s 2 BEEFY keys (probably development keys) and V3 sudo.</p></div>
+    </div>
+    <p class="foot__credits small">Pictures: “Medieval tally sticks” by Winchester City Council Museums, <a href="https://commons.wikimedia.org/wiki/File:Medieval_tally_sticks.jpg">CC BY-SA 2.0</a>. “SAM PC 1 – Tally sticks 1”, item 06 and overview, <a href="https://commons.wikimedia.org/w/index.php?curid=8726827">CC BY 3.0</a>, via Wikimedia Commons. “Portrait of an Elderly Man Holding a Tally Stick” by the Master of the Legend of the Magdalen, <a href="https://commons.wikimedia.org/wiki/File:Master_of_the_Legend_of_Magdalen_-_Portrait_of_an_Elderly_Man_Holding_a_Tally_Stick,_DO_4170.png">public domain</a>. Exchequer tally from the Encyclopaedia Britannica (1911), <a href="https://commons.wikimedia.org/wiki/File:EB1911_Tally_-_tally_stick_(diagram).jpg">public domain</a>.</p>
+    <div class="foot__last">
+      <p class="small">© 2026 Talyx</p>
+      <a class="button button--small button--light" href="/app/">Open the demo</a>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/site/landing.ts"></script>
+</body>
+</html>
