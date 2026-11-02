@@ -1,6 +1,8 @@
 #!/usr/bin/env -S npx tsx
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { buildImport, buildSlotProof, connect, findJustified, verifyImport, verifySlotProof } from './chain.ts';
+import { checkSlot, claim, deployFillBook, deploySepolia, fill, forgeClaim, importBlock, refund, trieIdOf } from './flow.ts';
+import type { Address } from 'viem';
 
 // talyx: build and check Portaldot V3 proofs against the public RPC. Usage: npm run talyx -- <command> [args]
 
@@ -13,7 +15,19 @@ const USAGE = `talyx <command>
                                           Revive child-root and storage proofs at a block, checked
   spike [--contract <addr>]               the whole path on the latest justified block, saved to fixtures/
 
-Environment: TALYX_V3_WS (default wss://test-node-v3.portaldot.dev)`;
+  deploy-fillbook                         deploy FillBook on V3; prints its trie id and code hash
+  deploy-sepolia --fillbook <addr> [--window <s>]
+                                          deploy BeefyStateRoots and TalyxEscrow (claim window, default 1800 s)
+  trie-id <contract>                      Revive.AccountInfoOf: trie id and code hash
+  fill <orderId> [--payee <addr>]         pay an order on V3 through FillBook
+  check-slot <orderId>                    the fill record under blake2_256(slot), as the escrow expects it
+  import [<B>]                            import a signed block (default: the latest) into BeefyStateRoots
+  claim <orderId>                         prove the fill under the latest signed block and pay the payee
+  forge-claim <orderId> --tamper <what>   the same claim with payee, time, block or order:<id> changed, as eth_call
+  refund <orderId>                        return an unfilled order's ETH after the deadline and claim window
+
+Environment (prover/.env): TALYX_PRIVATE_KEY, TALYX_FILLBOOK, TALYX_STATE_ROOTS, TALYX_ESCROW,
+TALYX_V3_WS, TALYX_V3_EVM_RPC, TALYX_SEPOLIA_RPC. See .env.example.`;
 
 // IntentRegistry (RelayMesh), a live Revive contract with storage (prd.md A.5)
 const SAMPLE_CONTRACT = '0xfcfc36e3ea951640d1e495a1e671d66c75eb5123';
@@ -52,6 +66,15 @@ async function main() {
         break;
       }
       case 'spike': await spike(api, flag('contract') ?? SAMPLE_CONTRACT); break;
+      case 'deploy-fillbook': await deployFillBook(api); break;
+      case 'deploy-sepolia': await deploySepolia(api, (flag('fillbook') ?? process.env.TALYX_FILLBOOK) as Address, BigInt(flag('window') ?? 1800)); break;
+      case 'trie-id': console.log(json(await trieIdOf(api, args[1]))); break;
+      case 'fill': await fill(BigInt(args[1]), flag('payee') as Address | undefined); break;
+      case 'check-slot': await checkSlot(api, BigInt(args[1])); break;
+      case 'import': await importBlock(api, args[1] ? Number(args[1]) : await findJustified(api)); break;
+      case 'claim': await claim(api, BigInt(args[1])); break;
+      case 'forge-claim': await forgeClaim(api, BigInt(args[1]), flag('tamper') ?? 'payee'); break;
+      case 'refund': await refund(BigInt(args[1])); break;
       default: console.error(`unknown command: ${cmd}\n\n${USAGE}`); process.exitCode = 2;
     }
   } finally {

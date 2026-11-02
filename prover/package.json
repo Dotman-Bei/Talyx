@@ -8,7 +8,7 @@
     "talyx": "./src/cli.ts"
   },
   "scripts": {
-    "talyx": "tsx src/cli.ts",
+    "talyx": "tsx --env-file-if-exists=.env src/cli.ts",
     "test": "tsx --test test/*.test.ts",
     "typecheck": "tsc --noEmit"
   },
