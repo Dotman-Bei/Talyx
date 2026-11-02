@@ -21,9 +21,9 @@ export const sepoliaPublic = createPublicClient({ chain: sepolia, transport: htt
 export const v3Public = createPublicClient({ chain: v3Evm, transport: http() });
 
 export function account() {
-  const key = process.env.TALYX_PRIVATE_KEY as Hex | undefined;
-  if (!key) throw new Error('set TALYX_PRIVATE_KEY (a funded testnet key) in prover/.env or the environment');
-  return privateKeyToAccount(key);
+  const raw = process.env.TALYX_PRIVATE_KEY?.trim();
+  if (!raw) throw new Error('set TALYX_PRIVATE_KEY (a funded testnet key) in prover/.env or the environment');
+  return privateKeyToAccount((raw.startsWith('0x') ? raw : `0x${raw}`) as Hex);
 }
 export const sepoliaWallet = () => createWalletClient({ account: account(), chain: sepolia, transport: http(SEPOLIA_RPC) });
 export const v3Wallet = () => createWalletClient({ account: account(), chain: v3Evm, transport: http() });
