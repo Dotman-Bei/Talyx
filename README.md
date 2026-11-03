@@ -87,6 +87,9 @@ A refund after the deadline plus the 30-minute claim window:
 [`0xaeaeb111…1022ae`](https://sepolia.etherscan.io/tx/0xaeaeb111dff311ee524061eb09ea5c82c5791834eb0aeb34f0986b687e1022ae).
 Every order, fill, import and claim so far: [docs/EVIDENCE.md](docs/EVIDENCE.md).
 
+From fill on V3 to the filler's claim on Sepolia, the first order took **1 minute 12 seconds**: filled in V3 block
+293,346, signed in 293,347, claimed 72 seconds after the fill. Per-order times: [docs/EVIDENCE.md](docs/EVIDENCE.md).
+
 ## Gas, measured on Sepolia
 
 | Call | Gas | Source |

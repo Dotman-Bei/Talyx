@@ -67,6 +67,20 @@ Other imports: `0xe756236cb99a3b7a11574736bcc0566b69be379683eddca6da913f3542c42b
 | the proof against order 2 (another recipient and amount, so another slot) | T-1, T-2 | reverts `SlotMismatch` |
 | a block hash never imported | T-15 | reverts (BeefyStateRoots `UnknownBlock`; the tool now decodes it by name) |
 
+## Time from fill to claim (prd.md DoD 21.8)
+
+From the fill's V3 block timestamp (recorded in FillBook) to the Sepolia block that included the claim.
+
+| Order | Fill (V3) | Signed block used | Claim (Sepolia) | Fill to claim | Note |
+| --- | --- | --- | --- | --- | --- |
+| 1 | #293,346, 15:13:12 UTC | #293,347, set 494 | #12,048,972, 15:14:24 UTC | **1 min 12 s** | claimed as soon as V3 signed the next block |
+| 3 | #293,378, 15:16:24 UTC | #293,395, set 494 | #12,048,997, 15:19:24 UTC | 3 min 0 s | forged claims were run first |
+| 5 | #294,109, 16:30:48 UTC | #294,115, set 495 | #12,049,361, 16:32:48 UTC | 2 min 0 s | second filler wallet |
+| 4 | #293,571, 15:35:42 UTC | #294,115, set 495 | #12,054,720, 10:33:36 UTC next day | 18 h 58 min | left unclaimed on purpose for the browser test |
+
+All times 2 November 2026 unless noted. The wait is bounded by V3's cadence of stored justifications (one in eight
+blocks, about 48 s) plus one Sepolia block for the claim; the import can be in the same minute.
+
 ## Gas
 
 Measured on Sepolia: `importBlock` 292,436 to 406,522; `claim` 488,319 to 680,194 (the claim proof grows with the
