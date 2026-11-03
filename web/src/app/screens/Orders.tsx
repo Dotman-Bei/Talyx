@@ -127,6 +127,11 @@ function NewOrder() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // the wallet often answers after the form opens: fill the recipient in once, if the visitor has not typed one
+  useEffect(() => {
+    if (wallet.address) setTo((current) => current || wallet.address!);
+  }, [wallet.address]);
+
   const toError = touched && !isAddress(to) ? 'Enter a full 0x address, 42 characters' : null;
   const amtError = touched ? amountError(amount) : null;
   const priceError = touched && !(Number(price) > 0) ? 'Enter the ETH you will escrow' : null;

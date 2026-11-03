@@ -160,7 +160,9 @@ if (form) {
     e.preventDefault();
     if (!form.reportValidity()) return;
     const data = new FormData(form);
-    const q = new URLSearchParams({ to: String(data.get('to')), amount: String(data.get('amount')) });
+    const to = String(data.get('to') ?? '').trim();
+    // an empty recipient lets the app use the visitor's own MetaMask address
+    const q = new URLSearchParams(to ? { to, amount: String(data.get('amount')) } : { amount: String(data.get('amount')) });
     location.href = `/app/?${q}#/orders/new`;
   });
 }
