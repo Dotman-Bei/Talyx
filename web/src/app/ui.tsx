@@ -76,6 +76,6 @@ export function TxLink({ hash, chain }: { hash?: string; chain?: 'sepolia' | 'v3
 export function TxStatus({ state }: { state: ActionState }) {
   if (state.busy) return <p className="txs" role="status"><i className="spinner" aria-hidden="true" />{state.busy}</p>;
   if (state.error) return <p className="txs txs--bad" role="alert">{state.error}</p>;
-  if (state.done) return <p className="txs txs--ok" role="status">{state.done.text}{state.done.tx && <> <TxLink hash={state.done.tx} chain={state.done.chain} /></>}</p>;
+  if (state.done) return <p className="txs txs--ok" role="status">{state.done.text}{state.done.tx && <>. Transaction <TxLink hash={state.done.tx} chain={state.done.chain} /></>}</p>;
   return null;
 }

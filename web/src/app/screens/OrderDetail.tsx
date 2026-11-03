@@ -61,7 +61,7 @@ export function OrderDetail({ id }: { id: number }) {
       const hash = await claimTx(args);
       step('Claimed. Reading it back');
       await refreshOrders();
-      return { text: 'Paid the recorded payee', tx: hash, chain: 'sepolia' };
+      return { text: 'Claimed: the recorded payee was paid', tx: hash, chain: 'sepolia' };
     }),
     refund: () => tx.run('Confirm the refund in MetaMask, on Sepolia', async () => {
       const { refundTx } = await import('../chain');
