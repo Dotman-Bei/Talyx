@@ -307,6 +307,9 @@ States for every block: loading (grey bars at real size), empty (frame + one sen
   `VITE_*_ADDRESS` variables are set.
 - **Verify** carries two museum photographs (the claim, the justification) and sets reference tables on one tone step.
   Its live check recomputes the keyset commitment, both signatures on #279,494 and the MMR bag.
+- **Real data replaces the samples on the landing page.** "One order, two chains" shows order 1 as it happened on
+  the testnets (filled in V3 block 293,346, signed in 293,347, claimed 1 min 12 s after the fill). The CTA's recipient
+  field starts empty and falls back to the visitor's MetaMask address, so nobody posts an order to a sample address.
 - **No video.** The only honest clip found (wood being cleaved) was a modern backyard scene and did not fit.
 
 ## 7. Avoid

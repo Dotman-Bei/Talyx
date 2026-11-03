@@ -130,24 +130,25 @@
       <div class="field field--mint">
         <h2 class="field__heading" id="how-title">One order, two chains</h2>
         <div class="ocard" data-ui>
-          <p class="ocard__id">Order 7 <span class="pill pill--plain">Open</span></p>
+          <p class="ocard__id">Order 1 <span class="pill pill--plain">Open</span></p>
           <dl class="ocard__rows">
             <div><dt>Deliver</dt><dd class="nums">0.5 tPOT</dd></div>
-            <div><dt>To on V3</dt><dd><code>0x3f2a…a91c</code></dd></div>
+            <div><dt>To on V3</dt><dd><code>0x5e3c…7fe6</code></dd></div>
             <div><dt>Escrow</dt><dd class="nums">0.0001 ETH</dd></div>
-            <div><dt>Deadline</dt><dd class="nums">14:30 UTC</dd></div>
+            <div><dt>Deadline</dt><dd class="nums">16:11 UTC</dd></div>
           </dl>
+          <p class="ocard__note">Posted on Sepolia, 2 November 2026.</p>
         </div>
         <p class="field__clause">First the order lands on Sepolia.</p>
       </div>
       <div class="field field--pink">
         <div class="ocard" data-ui>
-          <p class="ocard__id">Order 7 <span class="pill pill--wait">Filled</span></p>
+          <p class="ocard__id">Order 1 <span class="pill pill--wait">Filled</span></p>
           <dl class="ocard__rows">
             <div><dt>Deliver</dt><dd class="nums">0.5 tPOT</dd></div>
-            <div><dt>To on V3</dt><dd><code>0x3f2a…a91c</code></dd></div>
-            <div><dt>Filled by</dt><dd><code>0x8c41…02be</code></dd></div>
-            <div><dt>V3 block</dt><dd class="nums">285,190</dd></div>
+            <div><dt>To on V3</dt><dd><code>0x5e3c…7fe6</code></dd></div>
+            <div><dt>Filled by</dt><dd><code>0x5e3c…7fe6</code></dd></div>
+            <div><dt>V3 block</dt><dd class="nums">293,346</dd></div>
           </dl>
           <p class="ocard__note">FillBook record written in the same call that paid.</p>
         </div>
@@ -155,27 +156,27 @@
       </div>
       <div class="field field--white">
         <div class="ocard" data-ui>
-          <p class="ocard__id">Order 7 <span class="pill pill--wait">Signed</span></p>
+          <p class="ocard__id">Order 1 <span class="pill pill--wait">Signed</span></p>
           <dl class="ocard__rows">
-            <div><dt>Filled in</dt><dd class="nums">285,190</dd></div>
-            <div><dt>Signed in</dt><dd class="nums">285,197</dd></div>
+            <div><dt>Filled in</dt><dd class="nums">293,346</dd></div>
+            <div><dt>Signed in</dt><dd class="nums">293,347</dd></div>
             <div><dt>Signatures</dt><dd class="nums">2 of 2</dd></div>
-            <div><dt>Validator set</dt><dd class="nums">480</dd></div>
+            <div><dt>Validator set</dt><dd class="nums">494</dd></div>
           </dl>
-          <p class="ocard__note">The next stored justification, 7 blocks after the fill.</p>
+          <p class="ocard__note">The very next block carried a stored justification.</p>
         </div>
         <p class="field__clause">V3’s two BEEFY keys sign a later block.</p>
       </div>
       <div class="field field--ink">
         <div class="ocard" data-ui>
-          <p class="ocard__id">Order 7 <span class="pill pill--ok">Claimed</span></p>
+          <p class="ocard__id">Order 1 <span class="pill pill--ok">Claimed</span></p>
           <dl class="ocard__rows">
             <div><dt>Paid</dt><dd class="nums">0.0001 ETH</dd></div>
-            <div><dt>To</dt><dd><code>0x8c41…02be</code></dd></div>
-            <div><dt>State root</dt><dd class="nums">block 285,196</dd></div>
-            <div><dt>Checked</dt><dd>4 proofs</dd></div>
+            <div><dt>To</dt><dd><code>0x5e3c…7fe6</code></dd></div>
+            <div><dt>State root</dt><dd class="nums">block 293,346</dd></div>
+            <div><dt>Fill to claim</dt><dd class="nums">1 min 12 s</dd></div>
           </dl>
-          <p class="ocard__note">Signatures, MMR root, header and storage proof.</p>
+          <p class="ocard__note">Claim <a href="https://sepolia.etherscan.io/tx/0x9f93af028ed8e6ac8d87861816cabc7a83173c61f709266ee5adfbf172755e0c"><code>0x9f93af02…5e0c</code></a> on Sepolia.</p>
         </div>
         <p class="field__clause">The proof pays the filler.</p>
       </div>
@@ -320,8 +321,8 @@
       <form class="dialog" data-ui action="/app/" method="get" data-cta-form>
         <p class="dialog__title">New order</p>
         <label class="dialog__label" for="cta-to">Deliver to on V3</label>
-        <input class="dialog__input" id="cta-to" name="to" value="0x3f2a9c4e1b7d8a06f5c2e9b13d4a7f60c81ea91c" spellcheck="false" autocomplete="off" aria-describedby="cta-to-help" pattern="^0x[0-9a-fA-F]{40}$" required>
-        <p class="dialog__help" id="cta-to-help">Your MetaMask address. It is the same on Sepolia and V3.</p>
+        <input class="dialog__input" id="cta-to" name="to" value="" placeholder="0x… your MetaMask address" spellcheck="false" autocomplete="off" aria-describedby="cta-to-help" pattern="^0x[0-9a-fA-F]{40}$">
+        <p class="dialog__help" id="cta-to-help">Leave it empty to use your connected MetaMask address. It is the same on Sepolia and V3.</p>
         <fieldset class="dialog__seg">
           <legend class="dialog__label">Amount</legend>
           <label><input type="radio" name="amount" value="0.5" checked><span>0.5 tPOT</span></label>
