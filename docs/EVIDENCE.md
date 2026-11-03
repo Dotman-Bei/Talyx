@@ -41,12 +41,13 @@ EVM RPC. Proven off-chain and in `contracts/test/LiveFillBook.t.sol` under signe
 | 4 | createOrder: 0.5 tPOT for 0.0001 ETH | Sepolia | `0xca0666c18bd4d8a22576f9cbb128c5613c2175a6c19e2d3b96a445cf9f26dedf` | |
 | 4 | fill, V3 block 293,571 | V3 | `0x611ebacaad5814e95dcfea2b29aed5a19f0f23bef13865eb80edb7cc8ee1a770` | |
 | 4 | importBlock (state root of 293,578) | Sepolia | `0x4fa65614fee33bc88d645c9b710796b4a295c105f2f20fb9ae69e4b42ee01b80` | 299,787 |
+| 4 | **claim from the demo app in the browser, signed in MetaMask** (proof built in the browser, reusing the imported block) | Sepolia | `0x974a4e376c80f01a3ef57f844ea09dc445e260d828ae787cde7d7f8921c5ca06` | 492,167 |
 | 5 | createOrder: 0.5 tPOT for 0.0001 ETH | Sepolia | `0x5f9bae4d98b58af023c6e180620f6e5bd0c2d10fd6b9366ef5773d0f1cd6fad8` | |
 | 5 | **fill from a second, unrelated wallet** `0x6E25…5EA8`, V3 block 294,109 | V3 | `0x91d6c1d6044083eb79189fabfe6a55ba83af92b7b960fe31cea9f624530d733b` | |
 | 5 | importBlock (state root of 294,114) | Sepolia | `0x6cf901be82aa0fce194da8097689d8a0444e808320ce7fa225dc0ff89b6f3c9f` | 296,112 |
 | 5 | **claim submitted by the deployer, paid to the second wallet** (its Sepolia balance went from 0 to 0.0001 ETH) | Sepolia | `0xd0ecba07e4d782ec279f275530fafb67392adfdcaee52db6e8159cff9f498406` | 680,194 |
 
-Order 4 is left signed and unclaimed for the live demo. The second filler wallet `0x6E25E6F3822a7B1F9c33653dCc04f2D394B65EA8`
+The second filler wallet `0x6E25E6F3822a7B1F9c33653dCc04f2D394B65EA8`
 was created for this test and funded with 6 tPOT on V3 (tx
 `0xcfd94b7fd2f352b669b11ffccadaba98e2a3d00291f33e17d89e28298349c4bc`, block 294,090); it never deployed anything.
 
